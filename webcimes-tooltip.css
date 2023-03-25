@@ -1,0 +1,103 @@
+/**
+ * Copyright (c) 2023 WebCimes - RICHARD Florian (https://webcimes.com)
+ * MIT License - https://choosealicense.com/licenses/mit/
+ * Date: 2023-03-25
+ */
+
+/*
+-----------------------
+    WEBCIMES TOOLTIP
+-----------------------
+*/
+
+.webcimesTooltip,
+.webcimesTooltip *,
+.webcimesTooltip *::before,
+.webcimesTooltip *::after
+{ 
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.webcimesTooltip
+{
+	--tooltip-color: #000;
+	--tooltip-background: #fff;
+	--tooltip-border-color: #ddd;
+	--tooltip-duration: 0.6s;
+
+	position: absolute;
+	color: var(--tooltip-color);
+	background: var(--tooltip-background);
+	border: 1px solid var(--tooltip-border-color);
+	border-radius: 5px;
+	padding: 10px 20px;
+	z-index: 4;
+	-webkit-transition: opacity var(--tooltip-duration) ease 0s, visibility 0s linear var(--tooltip-duration);
+    -moz-transition: opacity var(--tooltip-duration) ease 0s, visibility 0s linear var(--tooltip-duration);
+    -o-transition: opacity var(--tooltip-duration) ease 0s, visibility 0s linear var(--tooltip-duration);
+    transition: opacity var(--tooltip-duration) ease 0s, visibility 0s linear var(--tooltip-duration);
+	opacity:0;
+	visibility:hidden;
+}
+.webcimesTooltip.show
+{
+	opacity:1;
+	visibility:visible;
+	-webkit-transition-delay:0s;
+	-moz-transition-delay:0s;
+	-o-transition-delay:0s;
+	transition-delay:0s;
+}
+.webcimesTooltip .arrow,
+.webcimesTooltip .arrow::before
+{
+	position: absolute;
+	width: 8px;
+	height: 8px;
+	background: inherit;
+}
+.webcimesTooltip .arrow
+{
+	visibility: hidden;
+}
+.webcimesTooltip .arrow::before
+{
+	visibility: visible;
+	content: '';
+	transform: rotate(45deg);
+	border-color: var(--tooltip-border-color);
+	border-style: solid;
+}
+.webcimesTooltip[data-popper-placement^='top'] > .arrow
+{
+	bottom: -5px;
+}
+.webcimesTooltip[data-popper-placement^='top'] > .arrow::before
+{
+	border-width: 0px 1px 1px 0px;
+}
+.webcimesTooltip[data-popper-placement^='bottom'] > .arrow
+{
+	top: -5px;
+}
+.webcimesTooltip[data-popper-placement^='bottom'] > .arrow::before
+{
+	border-width: 1px 0px 0px 1px;
+}
+.webcimesTooltip[data-popper-placement^='left'] > .arrow
+{
+	right: -5px;
+}
+.webcimesTooltip[data-popper-placement^='left'] > .arrow::before
+{
+	border-width: 1px 1px 0px 0px;
+}
+.webcimesTooltip[data-popper-placement^='right'] > .arrow
+{
+	left: -5px;
+}
+.webcimesTooltip[data-popper-placement^='right'] > .arrow::before
+{
+	border-width: 0px 0px 1px 1px;
+}

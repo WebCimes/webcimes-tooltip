@@ -1,0 +1,27 @@
+{
+  "name": "webcimes-tooltip",
+  "version": "1.0.0",
+  "description": "Create and animate tooltips simply, for dropdowns tooltips and titles tooltips. It works with vanilla javascript + html + css and with popper dependency.",
+  "main": "webcimes-tooltip.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WebCimes/webcimes-tooltip.git"
+  },
+  "author": "WebCimes",
+  "license": "MIT",
+  "keywords": [
+    "tooltip",
+    "dropdown",
+    "title"
+  ],
+  "bugs": {
+    "url": "https://github.com/WebCimes/webcimes-tooltip/issues"
+  },
+  "homepage": "https://github.com/WebCimes/webcimes-tooltip#readme",
+  "dependencies": {
+    "@popperjs/core": "^2.11.6"
+  }
+}
