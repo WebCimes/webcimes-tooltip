@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="Author" content="WebCimes">
+        <meta name="Copyright" content="© https://webcimes.com">
+        <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>Demo webcimes-tooltip</title>
+        <link rel="stylesheet" href="../dist/css/webcimes-tooltip.css">
+        <script type="importmap">
+        {
+            "imports": {
+                "@popperjs/core": "https://unpkg.com/@popperjs/core@2.11.6/dist/esm/index.js",
+                "webcimes-tooltip": "../dist/js/webcimes-tooltip.esm.js"
+            }
+        }
+        </script>
+		<script type="module">
+            // Import webcimes-tooltip
+            import { webcimesTooltip, webcimesTooltipTitle } from "webcimes-tooltip";
+
+            // Wait for dom content loaded
+            document.addEventListener("DOMContentLoaded", function()
+            {
+                // Set basic tooltip
+                webcimesTooltip({
+                    placement: 'auto', // optional, default "auto"
+                    delay: 0, // optional, default 0
+                    duration: 600, // optional, default 600
+                    arrow: true, // optional, default true
+                });
+
+                // Set tooltip title
+                webcimesTooltipTitle({
+                    placement: 'top', // optional, default "top"
+                    delay: 400, // optional, default 400
+                    duration: 600, // optional, default 600
+                    arrow: true, // optional, default true
+                });
+            });
+		</script>
+    </head>
+    <body>
+        <h3>Basic tooltip example:</h3>
+        <div>
+            <button class="webcimesTooltipButton">My button</button>
+            <div class="webcimesTooltip" data-tooltip-placement="auto" data-tooltip-delay="0" data-tooltip-duration="600" data-tooltip-arrow="true">
+                My content<br>
+                <div style='color:red;'>red</div>
+                <div style='color:blue;'>blue</div>
+            </div>
+        </div>
+        <h3>Basic title example:</h3>
+        <span title="My title" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true">My content</span>
+        <br>
+        <h3>Basic title example without title default attribute:</h3>
+        <span data-tooltip-title="My title" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true">My content</span>
+        <br>
+        <h3>Basic title example with html:</h3>
+        <span title="My <span style='color:red;'>red</span> title<br>With some <i>html</i>" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true">My content</span>
+    </body>
+</html>
