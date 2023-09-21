@@ -3,8 +3,7 @@ import webpack from "webpack";
 import TerserPlugin from "terser-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
-import RemovePlugin from "remove-files-webpack-plugin";
-import TypescriptDeclarationPlugin from "typescript-declaration-webpack-plugin";
+import FileManagerPlugin from "filemanager-webpack-plugin";
 // const isProduction = process.env.NODE_ENV == "production";
 
 // Config UDM
@@ -38,10 +37,15 @@ const configUDM: webpack.Configuration = {
         ],
     },
     plugins: [
-        new TypescriptDeclarationPlugin({
-            out: "./js/webcimes-tooltip.udm.d.ts",
-            removeMergedDeclarations: false,
-            removeComments: false,
+        new FileManagerPlugin({
+            events: {
+                onEnd: {
+                    copy: [
+                        { source: "./src/ts/webcimes-tooltip.d.ts", destination: './dist/js/webcimes-tooltip.udm.d.ts' },
+                    ],
+
+                },
+            },
         }),
     ],
 };
@@ -80,10 +84,15 @@ const configESM: webpack.Configuration = {
         ],
     },
     plugins: [
-        new TypescriptDeclarationPlugin({
-            out: "./js/webcimes-tooltip.esm.d.ts",
-            removeMergedDeclarations: false,
-            removeComments: false,
+        new FileManagerPlugin({
+            events: {
+                onEnd: {
+                    copy: [
+                        { source: "./src/ts/webcimes-tooltip.d.ts", destination: './dist/js/webcimes-tooltip.esm.d.ts' },
+                    ],
+
+                },
+            },
         }),
     ],
 };
@@ -125,23 +134,21 @@ const configCSS: webpack.Configuration = {
         ],
     },
     plugins: [
-        new MiniCssExtractPlugin({filename: "css/[name].css"}),
-        new RemovePlugin({
-            before: {
-                include: [
-                    './dist' // Delete dist folder before running webpack build
-                ]
+        new MiniCssExtractPlugin({ filename: "css/[name].css" }),
+        new FileManagerPlugin({
+            events: {
+                onStart: {
+                    delete: [
+                        "./dist",
+                    ],
+                },
+                onEnd: {
+                    delete: [
+                        "./dist/css/webcimes-tooltip.js",
+                        "./dist/css/webcimes-tooltip.js.map",
+                    ],
+                }
             },
-            after: {
-                test: [
-                    {
-                        folder: './dist/css',
-                        method: (absoluteItemPath) => {
-                            return new RegExp(/(\.js|\.js\.map)$/, 'm').test(absoluteItemPath); // Delete extra empty js file (can't ouput directly css)
-                        },
-                    }
-                ],
-            }
         }),
     ],
 };

@@ -7,38 +7,7 @@
         <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 		<title>Demo webcimes-tooltip</title>
         <link rel="stylesheet" href="../dist/css/webcimes-tooltip.css">
-        <script type="importmap">
-        {
-            "imports": {
-                "@popperjs/core": "https://unpkg.com/@popperjs/core@2.11.6/dist/esm/index.js",
-                "webcimes-tooltip": "../dist/js/webcimes-tooltip.esm.js"
-            }
-        }
-        </script>
-		<script type="module">
-            // Import webcimes-tooltip
-            import { webcimesTooltip, webcimesTooltipTitle } from "webcimes-tooltip";
-
-            // Wait for dom content loaded
-            document.addEventListener("DOMContentLoaded", function()
-            {
-                // Set basic tooltip
-                webcimesTooltip({
-                    placement: 'auto', // optional, default "auto"
-                    delay: 0, // optional, default 0
-                    duration: 600, // optional, default 600
-                    arrow: true, // optional, default true
-                });
-
-                // Set tooltip title
-                webcimesTooltipTitle({
-                    placement: 'top', // optional, default "top"
-                    delay: 400, // optional, default 400
-                    duration: 600, // optional, default 600
-                    arrow: true, // optional, default true
-                });
-            });
-		</script>
+		<script type="module" src="script.js"></script>
     </head>
     <body>
         <h3>Basic tooltip example:</h3>

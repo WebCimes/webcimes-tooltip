@@ -3,6 +3,7 @@
  * MIT License - https://choosealicense.com/licenses/mit/
  * Date: 2023-03-25
  */
+import { Placement } from '@popperjs/core';
 /**
  * Options
  */
@@ -17,17 +18,29 @@ interface Options {
     arrow: boolean;
 }
 /**
- * Create automatically tooltip
- * @param {Object} options
- * @param {String} options.placement
- * @param {Number} options.delay
- * @param {Number} options.duration
- * @param {Boolean} options.arrow
+ * Class WebcimesModal
  */
-export declare function webcimesTooltip(options: Options): void;
-/**
- * Create automatically tooltip title
- */
-export declare function webcimesTooltipTitle(options: Options): void;
+export declare class WebcimesTooltip {
+    /**
+     * Get a unique ID, related to the prefix
+     */
+    private getUniqueID;
+    /**
+     * Show the tooltip
+     */
+    private tooltipShow;
+    /**
+     * Hide the tooltip
+     */
+    private tooltipHide;
+    /**
+     * Create automatically tooltip
+     */
+    webcimesTooltip(options: Options): void;
+    /**
+     * Create automatically tooltip title
+     */
+    webcimesTooltipTitle(options: Options): void;
+}
 export {};
 //# sourceMappingURL=webcimes-tooltip.d.ts.map
