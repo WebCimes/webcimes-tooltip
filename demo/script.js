@@ -6,7 +6,7 @@ import { WebcimesTooltip } from "../dist/js/webcimes-tooltip.esm.js";
 document.addEventListener("DOMContentLoaded", function()
 {
     // Set basic tooltip
-    new WebcimesTooltip().webcimesTooltip({
+    new WebcimesTooltip().tooltipForButton({
         placement: 'auto', // optional, default "auto"
         delay: 0, // optional, default 0
         duration: 600, // optional, default 600
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function()
     });
 
     // Set tooltip title
-    new WebcimesTooltip().webcimesTooltipTitle({
+    new WebcimesTooltip().tooltipForTitle({
         placement: 'top', // optional, default "top"
         delay: 400, // optional, default 400
         duration: 600, // optional, default 600

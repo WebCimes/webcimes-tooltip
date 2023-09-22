@@ -42,6 +42,7 @@ interface ThisTooltip extends HTMLElement {
 	/** popper instance */
 	popper?: Instance;
 }
+type ThisTooltipOrNull = ThisTooltip | null;
 
 /**
  * Class WebcimesModal
@@ -62,7 +63,7 @@ export class WebcimesTooltip
 	/**
 	 * Show the tooltip
 	 */
-	private tooltipShow(thisTooltipRef: HTMLElement, thisTooltip: ThisTooltip | null)
+	private show(thisTooltipRef: HTMLElement, thisTooltip: ThisTooltipOrNull)
 	{
 		if(thisTooltip)
 		{
@@ -104,7 +105,7 @@ export class WebcimesTooltip
 	/**
 	 * Hide the tooltip
 	 */
-	private tooltipHide(thisTooltip: ThisTooltip | null, callback?: () => void)
+	private hide(thisTooltip: ThisTooltipOrNull, callback?: () => void)
 	{
 		if(thisTooltip)
 		{
@@ -144,9 +145,9 @@ export class WebcimesTooltip
 	}
 
 	/**
-	 * Create automatically tooltip
+	 * Create automatically tooltip for button
 	 */
-	public webcimesTooltip(options: Options)
+	public tooltipForButton(options: Options)
 	{
 		const defaults: Options = {
 			placement: "auto",
@@ -161,7 +162,7 @@ export class WebcimesTooltip
 			const thisTooltipRef = (e.target as HTMLElement).closest(".webcimesTooltipButton") as HTMLElement | null;
 			if(thisTooltipRef)
 			{
-				const thisTooltip: ThisTooltip | null = thisTooltipRef.nextElementSibling as HTMLElement | null;
+				const thisTooltip: ThisTooltipOrNull = thisTooltipRef.nextElementSibling as HTMLElement | null;
 				if(thisTooltip)
 				{
 					thisTooltip.tooltipPlacement = (thisTooltip.getAttribute('data-tooltip-placement') || options.placement) as Placement;
@@ -178,24 +179,27 @@ export class WebcimesTooltip
 					}
 			
 					// Show the tooltip
-					this.tooltipShow(thisTooltipRef, thisTooltip);
+					this.show(thisTooltipRef, thisTooltip);
 				}
 			}
 		});
 
 		// Tooltip click outside (hide)
-		document.addEventListener("click", () => {
-			document.querySelectorAll(".webcimesTooltip.show:not(.title)").forEach((thisTooltip: ThisTooltip) => {
-				// Hide the tooltip
-				this.tooltipHide(thisTooltip);
-			});
+		document.addEventListener("click", (e) => {
+			if(!(e.target as HTMLElement).closest(".webcimesTooltip"))
+			{
+				document.querySelectorAll(".webcimesTooltip.show:not(.title)").forEach((thisTooltip: ThisTooltip) => {
+					// Hide the tooltip
+					this.hide(thisTooltip);
+				});
+			}
 		});
 	}
 
 	/**
-	 * Create automatically tooltip title
+	 * Create automatically tooltip for title
 	 */
-	public webcimesTooltipTitle(options: Options)
+	public tooltipForTitle(options: Options)
 	{
 		const defaults = {
 			placement: 'top',
@@ -213,12 +217,19 @@ export class WebcimesTooltip
 
 		// On mouseenter / click, create tooltip title
 		document.addEventListener("mouseenter", (e) => {
-			if((e.target as HTMLElement).matches && (e.target as HTMLElement).matches("[data-tooltip-title]"))
+			let thisTooltipRef: HTMLElement | null = null;
+			if((e.target as HTMLElement).matches("[data-tooltip-title]"))
 			{
-				const thisTooltipRef = e.target as HTMLElement;
-				
+				thisTooltipRef = e.target as HTMLElement;
+			}
+			else if((e.target as HTMLElement).closest(".webcimesTooltip"))
+			{
+				thisTooltipRef = document.querySelector("[data-tooltip-target='"+(e.target as HTMLElement).id+"']");
+			}
+			if(thisTooltipRef)
+			{
 				// If the tooltip already exist then get it, also create a new one with unique ID
-				let thisTooltip: ThisTooltip | null = null;
+				let thisTooltip: ThisTooltipOrNull = null;
 				if(document.querySelector(".webcimesTooltip.title#"+thisTooltipRef.getAttribute("data-tooltip-target")))
 				{
 					thisTooltip = document.querySelector(".webcimesTooltip.title#"+thisTooltipRef.getAttribute("data-tooltip-target"));
@@ -241,27 +252,34 @@ export class WebcimesTooltip
 							thisTooltip.insertAdjacentHTML("beforeend", '<div class="arrow" data-popper-arrow></div>');
 						}
 					}
-	1			}
+				}
 
 				// Show the tooltip
-				this.tooltipShow(thisTooltipRef, thisTooltip);
+				this.show(thisTooltipRef, thisTooltip);
 			}
 		}, true);
 
 		// On mouseleave, hide, remove and destroy tooltip title
 		document.addEventListener("mouseleave", (e) => {
-			if((e.target as HTMLElement).matches && (e.target as HTMLElement).matches("[data-tooltip-title]"))
+			let thisTooltipRef: HTMLElement | null = null;
+			if((e.target as HTMLElement).matches("[data-tooltip-title]"))
 			{
-				const thisTooltipRef = e.target as HTMLElement;
-
+				thisTooltipRef = e.target as HTMLElement;
+			}
+			else if((e.target as HTMLElement).closest(".webcimesTooltip"))
+			{
+				thisTooltipRef = document.querySelector("[data-tooltip-target='"+(e.target as HTMLElement).id+"']");
+			}
+			if(thisTooltipRef)
+			{
 				// Get the tooltip
-				const thisTooltip: ThisTooltip | null = document.querySelector(".webcimesTooltip.title#"+thisTooltipRef.getAttribute("data-tooltip-target"));
+				const thisTooltip: ThisTooltipOrNull = document.querySelector(".webcimesTooltip.title#"+thisTooltipRef.getAttribute("data-tooltip-target"));
 				
 				// Hide the tooltip
-				this.tooltipHide(thisTooltip, function()
+				this.hide(thisTooltip, function()
 				{
 					// Remove tooltip target attribute
-					thisTooltipRef.removeAttribute("data-tooltip-target");
+					thisTooltipRef!.removeAttribute("data-tooltip-target");
 
 					// Remove the tooltip
 					thisTooltip?.remove();

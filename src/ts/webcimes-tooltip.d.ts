@@ -28,19 +28,19 @@ export declare class WebcimesTooltip {
     /**
      * Show the tooltip
      */
-    private tooltipShow;
+    private show;
     /**
      * Hide the tooltip
      */
-    private tooltipHide;
+    private hide;
     /**
-     * Create automatically tooltip
+     * Create automatically tooltip for button
      */
-    webcimesTooltip(options: Options): void;
+    tooltipForButton(options: Options): void;
     /**
-     * Create automatically tooltip title
+     * Create automatically tooltip for title
      */
-    webcimesTooltipTitle(options: Options): void;
+    tooltipForTitle(options: Options): void;
 }
 export {};
 //# sourceMappingURL=webcimes-tooltip.d.ts.map
