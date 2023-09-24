@@ -51,15 +51,6 @@ type ThisTooltipOrNull = ThisTooltip | null;
  */
 export class WebcimesTooltip
 {
-	/** Get the dom element of the tooltip ref */
-	public tooltipRef: HTMLElement;
-
-	/** Get the dom element of the tooltip */
-	public tooltip: ThisTooltipOrNull;
-
-	/** Options of the current tooltip */
-	private options: Options;
-
 	/**
 	 * Get a unique ID, related to the prefix
 	 */
@@ -72,42 +63,24 @@ export class WebcimesTooltip
 	};
 
 	/**
-	 * Convert elements entry to an array of HTMLElement
+	 * Convert options.element to an array of HTMLElement
 	 */
-	private getHtmlElements = (element: string | HTMLElement | NodeList | null) => {
+	private getHtmlElements = (element: Options["element"]) => {
 		// Convert options.element to an array of HTMLElement
-		let htmlElements: HTMLElement[] = [];
+		let elements: HTMLElement[] = [];
 		if(element instanceof NodeList)
 		{
-			htmlElements = [...Array.from(element) as HTMLElement[]];
+			elements = [...Array.from(element) as HTMLElement[]];
 		}
 		if(element instanceof HTMLElement)
 		{
-			htmlElements = [...[element]];
+			elements = [...[element]];
 		}
 		if(typeof element === "string")
 		{
-			htmlElements = [...Array.from(document.querySelectorAll(element)) as HTMLElement[]];
+			elements = [...Array.from(document.querySelectorAll(element)) as HTMLElement[]];
 		}
-		return htmlElements;
-	};
-
-
-	/**
-	 * Convert element entry to an HTMLElement
-	 */
-	private getHtmlElement = (element: string | HTMLElement | null) => {
-		// Convert options.element to an array of HTMLElement
-		let htmlElement: HTMLElement | null = null;
-		if(element instanceof HTMLElement)
-		{
-			htmlElement = element;
-		}
-		if(typeof element === "string")
-		{
-			htmlElement = document.querySelector(element) as HTMLElement | null;
-		}
-		return htmlElement;
+		return elements;
 	};
 
 	/**

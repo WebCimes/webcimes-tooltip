@@ -8,6 +8,8 @@ import { Placement } from '@popperjs/core';
  * Options
  */
 interface Options {
+    /** Element (selector sting or HTMLElement) */
+    element: string | HTMLElement | NodeList | null;
     /** Choose tooltip placement */
     placement: Placement;
     /** Delay before show the tooltip */
@@ -25,6 +27,10 @@ export declare class WebcimesTooltip {
      * Get a unique ID, related to the prefix
      */
     private getUniqueID;
+    /**
+     * Convert options.element to an array of HTMLElement
+     */
+    private getHtmlElements;
     /**
      * Show the tooltip
      */

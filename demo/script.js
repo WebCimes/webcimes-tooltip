@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function()
 {
     // Set basic tooltip
     new WebcimesTooltip().tooltipForButton({
+        element: document.querySelectorAll("button"),
         placement: 'auto', // optional, default "auto"
         delay: 0, // optional, default 0
         duration: 600, // optional, default 600
@@ -15,6 +16,9 @@ document.addEventListener("DOMContentLoaded", function()
 
     // Set tooltip title
     new WebcimesTooltip().tooltipForTitle({
+        // element: "[title]",
+        // element: document.querySelector("[title]"),
+        element: document.querySelectorAll("[title]"),
         placement: 'top', // optional, default "top"
         delay: 400, // optional, default 400
         duration: 600, // optional, default 600

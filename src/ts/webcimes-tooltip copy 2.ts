@@ -12,7 +12,7 @@ import { createPopper, Placement, Instance } from '@popperjs/core';
  */
 interface Options {
 	/** Element (selector sting or HTMLElement) */
-	element: string | HTMLElement | NodeList | null;
+	element: string | HTMLElement | null;
 	/** Choose tooltip placement */
 	placement: Placement;
 	/** Delay before show the tooltip */
@@ -51,15 +51,6 @@ type ThisTooltipOrNull = ThisTooltip | null;
  */
 export class WebcimesTooltip
 {
-	/** Get the dom element of the tooltip ref */
-	public tooltipRef: HTMLElement;
-
-	/** Get the dom element of the tooltip */
-	public tooltip: ThisTooltipOrNull;
-
-	/** Options of the current tooltip */
-	private options: Options;
-
 	/**
 	 * Get a unique ID, related to the prefix
 	 */
@@ -72,65 +63,12 @@ export class WebcimesTooltip
 	};
 
 	/**
-	 * Convert elements entry to an array of HTMLElement
-	 */
-	private getHtmlElements = (element: string | HTMLElement | NodeList | null) => {
-		// Convert options.element to an array of HTMLElement
-		let htmlElements: HTMLElement[] = [];
-		if(element instanceof NodeList)
-		{
-			htmlElements = [...Array.from(element) as HTMLElement[]];
-		}
-		if(element instanceof HTMLElement)
-		{
-			htmlElements = [...[element]];
-		}
-		if(typeof element === "string")
-		{
-			htmlElements = [...Array.from(document.querySelectorAll(element)) as HTMLElement[]];
-		}
-		return htmlElements;
-	};
-
-
-	/**
-	 * Convert element entry to an HTMLElement
-	 */
-	private getHtmlElement = (element: string | HTMLElement | null) => {
-		// Convert options.element to an array of HTMLElement
-		let htmlElement: HTMLElement | null = null;
-		if(element instanceof HTMLElement)
-		{
-			htmlElement = element;
-		}
-		if(typeof element === "string")
-		{
-			htmlElement = document.querySelector(element) as HTMLElement | null;
-		}
-		return htmlElement;
-	};
-
-	/**
 	 * Show the tooltip
 	 */
-	private show(thisTooltipRef: HTMLElement, thisTooltip: ThisTooltipOrNull, options: Options)
+	private show(thisTooltipRef: HTMLElement, thisTooltip: ThisTooltipOrNull)
 	{
 		if(thisTooltip)
 		{
-			// Init the tooltip with the options
-			thisTooltip.tooltipPlacement = (thisTooltipRef.getAttribute('data-tooltip-placement') || options.placement) as Placement;
-			thisTooltip.tooltipDelay = (thisTooltipRef.getAttribute('data-tooltip-delay') || options.delay) as number;
-			thisTooltip.tooltipDuration = (thisTooltipRef.getAttribute('data-tooltip-duration') || options.duration) as number;
-			thisTooltip.tooltipArrow = (JSON.parse((thisTooltipRef.getAttribute('data-tooltip-arrow') || options.arrow) as string)) as boolean;
-			thisTooltip.style.setProperty("--tooltip-duration", thisTooltip.tooltipDuration+"ms");
-			if(thisTooltip.tooltipArrow)
-			{
-				if(!thisTooltip.querySelector(".arrow"))
-				{
-					thisTooltip.insertAdjacentHTML("beforeend", '<div class="arrow" data-popper-arrow></div>');
-				}
-			}
-
 			// Clear tooltipHideTimeout
 			clearTimeout(thisTooltip.tooltipHideTimeout);
 
@@ -222,31 +160,40 @@ export class WebcimesTooltip
 		}
 		options = {...defaults, ...options};
 		
-		// Convert options.element to an array of HTMLElement
-		const elements = this.getHtmlElements(options.element);
-		
-		// For all elements
-		elements.forEach((el) => {
-			const thisTooltipRef = el;
-			const thisTooltip: ThisTooltipOrNull = thisTooltipRef.nextElementSibling as HTMLElement | null;
-			if(thisTooltip)
+		// Tooltip button (show)
+		document.addEventListener("click", (e) => {
+			const thisTooltipRef = (e.target as HTMLElement).closest(".webcimesTooltipButton") as HTMLElement | null;
+			if(thisTooltipRef)
 			{
-				// add class webcimesToolTip
-				thisTooltip.classList.add("webcimesTooltip");
-
-				// Tooltip button (show)
-				el.addEventListener("click", (e) => {
-					// Show the tooltip
-					this.show(thisTooltipRef, thisTooltip, options);
-				});
-
-				// Tooltip click outside (hide)
-				document.addEventListener("click", (e) => {
-					if(e.target != thisTooltipRef && (e.target as HTMLElement).closest(".webcimesTooltip") != thisTooltip)
+				const thisTooltip: ThisTooltipOrNull = thisTooltipRef.nextElementSibling as HTMLElement | null;
+				if(thisTooltip)
+				{
+					thisTooltip.tooltipPlacement = (thisTooltip.getAttribute('data-tooltip-placement') || options.placement) as Placement;
+					thisTooltip.tooltipDelay = (thisTooltip.getAttribute('data-tooltip-delay') || options.delay) as number;
+					thisTooltip.tooltipDuration = (thisTooltip.getAttribute('data-tooltip-duration') || options.duration) as number;
+					thisTooltip.tooltipArrow = (JSON.parse((thisTooltip.getAttribute('data-tooltip-arrow') || options.arrow) as string)) as boolean;
+					thisTooltip.style.setProperty("--tooltip-duration", thisTooltip.tooltipDuration+"ms");
+					if(thisTooltip.tooltipArrow)
 					{
-						// Hide the tooltip
-						this.hide(thisTooltip);
+						if(!thisTooltip.querySelector(".arrow"))
+						{
+							thisTooltip.insertAdjacentHTML("beforeend", '<div class="arrow" data-popper-arrow></div>');
+						}
 					}
+			
+					// Show the tooltip
+					this.show(thisTooltipRef, thisTooltip);
+				}
+			}
+		});
+
+		// Tooltip click outside (hide)
+		document.addEventListener("click", (e) => {
+			if(!(e.target as HTMLElement).closest(".webcimesTooltip"))
+			{
+				document.querySelectorAll(".webcimesTooltip.show:not(.title)").forEach((thisTooltip: ThisTooltip) => {
+					// Hide the tooltip
+					this.hide(thisTooltip);
 				});
 			}
 		});
@@ -267,7 +214,19 @@ export class WebcimesTooltip
 		options = {...defaults, ...options};
 
 		// Convert options.element to an array of HTMLElement
-		const elements = this.getHtmlElements(options.element);
+		let elements: HTMLElement[] = [];
+		if(options.element instanceof NodeList)
+		{
+			elements = [...Array.from(options.element) as HTMLElement[]];
+		}
+		if(options.element instanceof HTMLElement)
+		{
+			elements = [...[options.element]];
+		}
+		if(typeof options.element === "string")
+		{
+			elements = [...Array.from(document.querySelectorAll(options.element)) as HTMLElement[]];
+		}
 		
 		// For all elements
 		elements.forEach((el) => {
@@ -282,9 +241,12 @@ export class WebcimesTooltip
 				{
 					thisTooltipRef = e.target as HTMLElement;
 				}
-				else if((e.target as HTMLElement).closest(".webcimesTooltip") && (e.target as HTMLElement).id == el.getAttribute("data-tooltip-target"))
+				else if((e.target as HTMLElement).closest(".webcimesTooltip"))
 				{
-					thisTooltipRef = document.querySelector("[data-tooltip-target='"+(e.target as HTMLElement).id+"']");
+					if((e.target as HTMLElement).id == el.getAttribute("data-tooltip-target"))
+					{
+						thisTooltipRef = document.querySelector("[data-tooltip-target='"+(e.target as HTMLElement).id+"']");
+					}
 				}
 				if(thisTooltipRef)
 				{
@@ -300,23 +262,38 @@ export class WebcimesTooltip
 						thisTooltipRef.setAttribute("data-tooltip-target", uniqueID);
 						document.body.insertAdjacentHTML("beforeend", '<div class="webcimesTooltip title" id="'+uniqueID+'">'+thisTooltipRef.getAttribute("data-tooltip-title")+'</div>');
 						thisTooltip = document.body.lastElementChild as ThisTooltip;
+						thisTooltip.tooltipPlacement = (thisTooltipRef.getAttribute('data-tooltip-placement') || options.placement) as Placement;
+						thisTooltip.tooltipDelay = (thisTooltipRef.getAttribute('data-tooltip-delay') || options.delay) as number;
+						thisTooltip.tooltipDuration = (thisTooltipRef.getAttribute('data-tooltip-duration') || options.duration) as number;
+						thisTooltip.tooltipArrow = (JSON.parse((thisTooltipRef.getAttribute('data-tooltip-arrow') || options.arrow) as string)) as boolean;
+						thisTooltip.style.setProperty("--tooltip-duration", thisTooltip.tooltipDuration+"ms");
+						if(thisTooltip.tooltipArrow)
+						{
+							if(!thisTooltip.querySelector(".arrow"))
+							{
+								thisTooltip.insertAdjacentHTML("beforeend", '<div class="arrow" data-popper-arrow></div>');
+							}
+						}
 					}
 
 					// Show the tooltip
-					this.show(thisTooltipRef, thisTooltip, options);
+					this.show(thisTooltipRef, thisTooltip);
 				}
 			}, true);
 
 			// On mouseleave, hide, remove and destroy tooltip title
 			document.addEventListener("mouseleave", (e) => {
 				let thisTooltipRef: HTMLElement | null = null;
-				if((e.target as HTMLElement).matches("[data-tooltip-title]") && e.target == el)
+				if(e.target == el && (e.target as HTMLElement).matches("[data-tooltip-title]"))
 				{
 					thisTooltipRef = e.target as HTMLElement;
 				}
-				else if((e.target as HTMLElement).closest(".webcimesTooltip") && (e.target as HTMLElement).id == el.getAttribute("data-tooltip-target"))
+				else if((e.target as HTMLElement).closest(".webcimesTooltip"))
 				{
-					thisTooltipRef = document.querySelector("[data-tooltip-target='"+(e.target as HTMLElement).id+"']");
+					if((e.target as HTMLElement).id == el.getAttribute("data-tooltip-target"))
+					{
+						thisTooltipRef = document.querySelector("[data-tooltip-target='"+(e.target as HTMLElement).id+"']");
+					}
 				}
 				if(thisTooltipRef)
 				{
