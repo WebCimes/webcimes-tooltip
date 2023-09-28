@@ -11,8 +11,6 @@ import { createPopper, Placement, Instance } from '@popperjs/core';
  * Options
  */
 interface Options {
-	/** Type (button tooltip or title tooltip) */
-	type: "button" | "title";
 	/** Element (selector sting or HTMLElement) */
 	element: string | HTMLElement | null;
 	/** Choose tooltip placement */
@@ -60,7 +58,6 @@ export class WebcimesTooltip
 	{
 		// Defaults
 		const defaults: Options = {
-			type: "button",
 			element: null,
 			placement: "auto",
 			delay: 400,
@@ -68,9 +65,6 @@ export class WebcimesTooltip
 			arrow: true,
 		}
 		this.options = {...defaults, ...options};
-
-		// Call init method
-		this.init();
 	}
 
 	/** Get the dom element of the tooltip ref */
@@ -135,17 +129,10 @@ export class WebcimesTooltip
 	/**
 	 * Show the tooltip
 	 */
-	public show()
+	private show()
 	{
 		if(this.tooltipRef && this.tooltip)
 		{
-			// For the type "title", if the tooltip doesn't already exist then add a new one on the dom
-			if(this.options.type == "title" && !document.querySelector(".webcimesTooltip.title#"+this.tooltipRef!.getAttribute("data-tooltip-target")))
-			{
-				document.body.insertAdjacentHTML("beforeend", this.tooltip!.outerHTML);
-				this.tooltip = document.body.lastElementChild as ThisTooltip;
-			}
-
 			// Init the tooltip with the options
 			this.tooltip.tooltipPlacement = (this.tooltipRef.getAttribute('data-tooltip-placement') || this.options.placement) as Placement;
 			this.tooltip.tooltipDelay = (this.tooltipRef.getAttribute('data-tooltip-delay') || this.options.delay) as number;
@@ -238,30 +225,11 @@ export class WebcimesTooltip
 	}
 
 	/**
-	 * Initialization of the current modal
-	 */
-    private init()
-	{
-		// Define tooltipRef
-		this.tooltipRef = this.getHtmlElement(this.options.element);
-
-		// Init type button
-		if(this.options.type == "button")
-		{
-			this.tooltipForButton();
-		}
-		// Init type title
-		else if(this.options.type == "title")
-		{
-			this.tooltipForTitle();
-		}
-	};
-
-	/**
 	 * Create automatically tooltip for button
 	 */
-	private tooltipForButton()
+	public tooltipForButton()
 	{
+		this.tooltipRef = this.getHtmlElement(this.options.element);
 		this.tooltip = this.tooltipRef?.nextElementSibling as HTMLElement | null;
 		if(this.tooltipRef && this.tooltip)
 		{
@@ -288,25 +256,41 @@ export class WebcimesTooltip
 	/**
 	 * Create automatically tooltip for title
 	 */
-	private tooltipForTitle()
+	public tooltipForTitle()
 	{
-		if(this.tooltipRef)
+		const element = this.getHtmlElement(this.options.element);
+		if(element)
 		{
 			// Create data-tooltip-title attribute, and remove title attribute
-			this.tooltipRef.setAttribute("data-tooltip-title", this.tooltipRef.getAttribute("title")!);
-			this.tooltipRef.removeAttribute("title");
-
-			// Create tooltip element without adding it to the dom
-			const uniqueID = this.getUniqueID("tooltipTitle");
-			this.tooltipRef!.setAttribute("data-tooltip-target", uniqueID);
-			let tooltip = document.createElement("template");
-			tooltip.innerHTML = '<div class="webcimesTooltip title" id="'+uniqueID+'">'+this.tooltipRef!.getAttribute("data-tooltip-title")+'</div>';
-			this.tooltip = tooltip.content.firstChild as HTMLElement;
+			element.setAttribute("data-tooltip-title", element.getAttribute("title")!);
+			element.removeAttribute("title");
 
 			// On mouseenter / click, create tooltip title
 			document.addEventListener("mouseenter", (e) => {
-				if(e.target == this.tooltipRef || e.target == this.tooltip)
+				this.tooltipRef = null;
+				if((e.target as HTMLElement).matches("[data-tooltip-title]") && e.target == element)
 				{
+					this.tooltipRef = e.target as HTMLElement;
+				}
+				else if((e.target as HTMLElement).closest(".webcimesTooltip") && (e.target as HTMLElement).id == element.getAttribute("data-tooltip-target"))
+				{
+					this.tooltipRef = document.querySelector("[data-tooltip-target='"+(e.target as HTMLElement).id+"']");
+				}
+				if(this.tooltipRef)
+				{
+					// If the tooltip already exist then get it, also create a new one with unique ID
+					if(document.querySelector(".webcimesTooltip.title#"+this.tooltipRef.getAttribute("data-tooltip-target")))
+					{
+						this.tooltip = document.querySelector(".webcimesTooltip.title#"+this.tooltipRef.getAttribute("data-tooltip-target"));
+					}
+					else
+					{
+						const uniqueID = this.getUniqueID("tooltipTitle");
+						this.tooltipRef.setAttribute("data-tooltip-target", uniqueID);
+						document.body.insertAdjacentHTML("beforeend", '<div class="webcimesTooltip title" id="'+uniqueID+'">'+this.tooltipRef.getAttribute("data-tooltip-title")+'</div>');
+						this.tooltip = document.body.lastElementChild as ThisTooltipOrNull;
+					}
+
 					// Show the tooltip
 					this.show();
 				}
@@ -314,11 +298,26 @@ export class WebcimesTooltip
 
 			// On mouseleave, hide, remove and destroy tooltip title
 			document.addEventListener("mouseleave", (e) => {
-				if(e.target == this.tooltipRef || e.target == this.tooltip)
+				this.tooltipRef = null;
+				if((e.target as HTMLElement).matches("[data-tooltip-title]") && e.target == element)
 				{
+					this.tooltipRef = e.target as HTMLElement;
+				}
+				else if((e.target as HTMLElement).closest(".webcimesTooltip") && (e.target as HTMLElement).id == element.getAttribute("data-tooltip-target"))
+				{
+					this.tooltipRef = document.querySelector("[data-tooltip-target='"+(e.target as HTMLElement).id+"']");
+				}
+				if(this.tooltipRef)
+				{
+					// Get the tooltip
+					this.tooltip = document.querySelector(".webcimesTooltip.title#"+this.tooltipRef.getAttribute("data-tooltip-target"));
+					
 					// Hide the tooltip
 					this.hide(() =>
 					{
+						// Remove tooltip target attribute
+						this.tooltipRef?.removeAttribute("data-tooltip-target");
+
 						// Remove the tooltip
 						this.tooltip?.remove();
 					});
