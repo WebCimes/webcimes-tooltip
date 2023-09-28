@@ -39,6 +39,11 @@ const configUDM: webpack.Configuration = {
     plugins: [
         new FileManagerPlugin({
             events: {
+                onStart: {
+                    delete: [
+                        "./dist/js",
+                    ],
+                },
                 onEnd: {
                     copy: [
                         { source: "./src/ts/webcimes-tooltip.d.ts", destination: './dist/js/webcimes-tooltip.udm.d.ts' },
@@ -86,6 +91,11 @@ const configESM: webpack.Configuration = {
     plugins: [
         new FileManagerPlugin({
             events: {
+                onStart: {
+                    delete: [
+                        "./dist/js",
+                    ],
+                },
                 onEnd: {
                     copy: [
                         { source: "./src/ts/webcimes-tooltip.d.ts", destination: './dist/js/webcimes-tooltip.esm.d.ts' },
@@ -139,7 +149,7 @@ const configCSS: webpack.Configuration = {
             events: {
                 onStart: {
                     delete: [
-                        "./dist",
+                        "./dist/css",
                     ],
                 },
                 onEnd: {

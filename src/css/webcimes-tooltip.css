@@ -24,7 +24,7 @@
 	--tooltip-color: #000;
 	--tooltip-background: #fff;
 	--tooltip-border-color: #ddd;
-	--tooltip-duration: 0.6s;
+	--tooltip-duration: 0s;
 
 	position: absolute;
 	color: var(--tooltip-color);

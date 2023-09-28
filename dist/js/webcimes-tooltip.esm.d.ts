@@ -21,6 +21,14 @@ interface Options {
     duration: number;
     /** Generate an arrow for the tooltip*/
     arrow: boolean;
+    /** callback before show tooltip */
+    beforeShow: () => void;
+    /** callback after show tooltip */
+    afterShow: () => void;
+    /** callback before destroy tooltip */
+    beforeDestroy: () => void;
+    /** callback after destroy tooltip */
+    afterDestroy: () => void;
 }
 /**
  * ThisTooltip
@@ -43,9 +51,8 @@ interface ThisTooltip extends HTMLElement {
     /** popper instance */
     popper?: Instance;
 }
-type ThisTooltipOrNull = ThisTooltip | null;
 /**
- * Class WebcimesModal
+ * Class WebcimesTooltip
  */
 export declare class WebcimesTooltip {
     /**
@@ -55,7 +62,7 @@ export declare class WebcimesTooltip {
     /** Get the dom element of the tooltip ref */
     tooltipRef: HTMLElement | null;
     /** Get the dom element of the tooltip */
-    tooltip: ThisTooltipOrNull;
+    tooltip: ThisTooltip;
     /** Options of the current tooltip */
     private options;
     /**
@@ -79,7 +86,7 @@ export declare class WebcimesTooltip {
      */
     hide(callback?: () => void): void;
     /**
-     * Initialization of the current modal
+     * Initialization of the current tooltip
      */
     private init;
     /**

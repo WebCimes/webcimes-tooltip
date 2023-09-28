@@ -23,6 +23,14 @@ interface Options {
 	duration: number;
 	/** Generate an arrow for the tooltip*/
 	arrow: boolean;
+	/** callback before show tooltip */
+	beforeShow: () => void;
+	/** callback after show tooltip */
+	afterShow: () => void;
+	/** callback before destroy tooltip */
+	beforeDestroy: () => void;
+	/** callback after destroy tooltip */
+	afterDestroy: () => void;
 }
 
 /**
@@ -46,10 +54,10 @@ interface ThisTooltip extends HTMLElement {
 	/** popper instance */
 	popper?: Instance;
 }
-type ThisTooltipOrNull = ThisTooltip | null;
+// type ThisTooltipOrNull = ThisTooltip | null;
 
 /**
- * Class WebcimesModal
+ * Class WebcimesTooltip
  */
 export class WebcimesTooltip
 {
@@ -66,6 +74,10 @@ export class WebcimesTooltip
 			delay: 400,
 			duration: 600,
 			arrow: true,
+			beforeShow: () => {},
+			afterShow: () => {},
+			beforeDestroy: () => {},
+			afterDestroy: () => {},
 		}
 		this.options = {...defaults, ...options};
 
@@ -77,7 +89,7 @@ export class WebcimesTooltip
 	public tooltipRef: HTMLElement | null;
 
 	/** Get the dom element of the tooltip */
-	public tooltip: ThisTooltipOrNull;
+	public tooltip: ThisTooltip;
 
 	/** Options of the current tooltip */
 	private options: Options;
@@ -89,7 +101,8 @@ export class WebcimesTooltip
 		do
 		{
 			prefix += Math.floor(Math.random()*10000);
-		} while (document.getElementById(prefix));
+		} while (document.querySelector("[data-tooltip-target='"+prefix+"']"));
+		
 		return prefix;
 	};
 
@@ -165,6 +178,17 @@ export class WebcimesTooltip
 
 			// Create tooltipShowtimeout
 			this.tooltip.tooltipShowTimeout = setTimeout(() => {
+				// Callback before show modal (set a timeout of zero, to wait for some dom to load)
+				if(!this.tooltip.tooltipAlreadyShow)
+				{
+					setTimeout(() => {
+						this.tooltip.dispatchEvent(new CustomEvent("beforeShow"));
+						if(typeof this.options.beforeShow === 'function')
+						{
+							this.options.beforeShow();
+						}
+					}, 0);
+				}
 
 				// Show the tooltip
 				this.tooltip!.classList.add('show');
@@ -173,7 +197,7 @@ export class WebcimesTooltip
 				this.tooltip!.tooltipAlreadyShow = true;
 
 			}, (this.tooltip.tooltipAlreadyShow?0:this.tooltip.tooltipDelay));
-			
+
 			// Create popper on the tooltip if doesn't exist
 			if(typeof this.tooltip.popper === "undefined")
 			{
@@ -238,7 +262,7 @@ export class WebcimesTooltip
 	}
 
 	/**
-	 * Initialization of the current modal
+	 * Initialization of the current tooltip
 	 */
     private init()
 	{
@@ -262,26 +286,29 @@ export class WebcimesTooltip
 	 */
 	private tooltipForButton()
 	{
-		this.tooltip = this.tooltipRef?.nextElementSibling as HTMLElement | null;
-		if(this.tooltipRef && this.tooltip)
+		if(this.tooltipRef)
 		{
-			// add class webcimesToolTip
-			this.tooltip.classList.add("webcimesTooltip");
+			this.tooltip = this.tooltipRef.nextElementSibling as HTMLElement;
+			if(this.tooltipRef && this.tooltip)
+			{
+				// add class webcimesToolTip
+				this.tooltip.classList.add("webcimesTooltip");
 
-			// Tooltip button (show)
-			this.tooltipRef.addEventListener("click", (e) => {
-				// Show the tooltip
-				this.show();
-			});
+				// Tooltip button (show)
+				this.tooltipRef.addEventListener("click", (e) => {
+					// Show the tooltip
+					this.show();
+				});
 
-			// Tooltip click outside (hide)
-			document.addEventListener("click", (e) => {
-				if(e.target != this.tooltipRef && (e.target as HTMLElement).closest(".webcimesTooltip") != this.tooltip)
-				{
-					// Hide the tooltip
-					this.hide();
-				}
-			});
+				// Tooltip click outside (hide)
+				document.addEventListener("click", (e) => {
+					if(e.target != this.tooltipRef && (e.target as HTMLElement).closest(".webcimesTooltip") != this.tooltip)
+					{
+						// Hide the tooltip
+						this.hide();
+					}
+				});
+			}
 		}
 	}
 
@@ -298,6 +325,7 @@ export class WebcimesTooltip
 
 			// Create tooltip element without adding it to the dom
 			const uniqueID = this.getUniqueID("tooltipTitle");
+			
 			this.tooltipRef!.setAttribute("data-tooltip-target", uniqueID);
 			let tooltip = document.createElement("template");
 			tooltip.innerHTML = '<div class="webcimesTooltip title" id="'+uniqueID+'">'+this.tooltipRef!.getAttribute("data-tooltip-title")+'</div>';

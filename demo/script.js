@@ -24,11 +24,14 @@ document.addEventListener("DOMContentLoaded", function()
             delay: 400, // optional, default 400
             duration: 600, // optional, default 600
             arrow: true, // optional, default true
+            beforeShow: () => {
+                console.log("before show");
+            }
         });
         // console.log(yop.tooltipRef);
         document.addEventListener("click", ()=>{
             // test.hide();
-            yop.show();
+            yop.hide();
         })
     });
 
