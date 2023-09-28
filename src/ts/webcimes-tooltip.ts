@@ -28,9 +28,9 @@ interface Options {
 	/** callback after show tooltip */
 	afterShow: () => void;
 	/** callback before destroy tooltip */
-	beforeDestroy: () => void;
+	beforeHide: () => void;
 	/** callback after destroy tooltip */
-	afterDestroy: () => void;
+	afterHide: () => void;
 }
 
 /**
@@ -76,8 +76,8 @@ export class WebcimesTooltip
 			arrow: true,
 			beforeShow: () => {},
 			afterShow: () => {},
-			beforeDestroy: () => {},
-			afterDestroy: () => {},
+			beforeHide: () => {},
+			afterHide: () => {},
 		}
 		this.options = {...defaults, ...options};
 
@@ -93,6 +93,19 @@ export class WebcimesTooltip
 
 	/** Options of the current tooltip */
 	private options: Options;
+
+	/** Event tooltip opacity transition end on show class */
+	private eventTransitionEndOnShow: (e: TransitionEvent) => void = (e) => {
+		if(this.tooltip.classList.contains("show") && e.propertyName == "opacity")
+		{
+			// Callback after show tooltip
+			this.tooltip.dispatchEvent(new CustomEvent("afterShow"));
+			if(typeof this.options.afterShow === 'function')
+			{
+				this.options.afterShow();
+			}
+		}
+	};
 
 	/**
 	 * Get a unique ID, related to the prefix
@@ -178,7 +191,7 @@ export class WebcimesTooltip
 
 			// Create tooltipShowtimeout
 			this.tooltip.tooltipShowTimeout = setTimeout(() => {
-				// Callback before show modal (set a timeout of zero, to wait for some dom to load)
+				// Callback before show tooltip (set a timeout of zero, to wait for some dom to load)
 				if(!this.tooltip.tooltipAlreadyShow)
 				{
 					setTimeout(() => {
@@ -197,6 +210,9 @@ export class WebcimesTooltip
 				this.tooltip!.tooltipAlreadyShow = true;
 
 			}, (this.tooltip.tooltipAlreadyShow?0:this.tooltip.tooltipDelay));
+
+			// Callback after show tooltip
+			this.tooltip.addEventListener("transitionend", this.eventTransitionEndOnShow);
 
 			// Create popper on the tooltip if doesn't exist
 			if(typeof this.tooltip.popper === "undefined")
@@ -231,6 +247,9 @@ export class WebcimesTooltip
 
 			// Hide the tooltip
 			this.tooltip.classList.remove('show');
+			
+			// Destroy all events
+			this.tooltip.removeEventListener("transitionend", this.eventTransitionEndOnShow);
 
 			// Create tooltipHideTimeout
 			this.tooltip.tooltipHideTimeout = setTimeout(() => {

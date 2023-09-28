@@ -26,9 +26,9 @@ interface Options {
     /** callback after show tooltip */
     afterShow: () => void;
     /** callback before destroy tooltip */
-    beforeDestroy: () => void;
+    beforeHide: () => void;
     /** callback after destroy tooltip */
-    afterDestroy: () => void;
+    afterHide: () => void;
 }
 /**
  * ThisTooltip
@@ -65,6 +65,8 @@ export declare class WebcimesTooltip {
     tooltip: ThisTooltip;
     /** Options of the current tooltip */
     private options;
+    /** Event tooltip opacity transition end on show class */
+    private eventTransitionEndOnShow;
     /**
      * Get a unique ID, related to the prefix
      */

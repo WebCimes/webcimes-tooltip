@@ -24,8 +24,8 @@ document.addEventListener("DOMContentLoaded", function()
             delay: 400, // optional, default 400
             duration: 600, // optional, default 600
             arrow: true, // optional, default true
-            beforeShow: () => {
-                console.log("before show");
+            afterShow: () => {
+                console.log("after show");
             }
         });
         // console.log(yop.tooltipRef);
