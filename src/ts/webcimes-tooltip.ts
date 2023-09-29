@@ -8,12 +8,25 @@
 import { createPopper, Placement, Instance } from '@popperjs/core';
 
 /**
+ * Global
+ */
+declare global {
+	/** Events */
+	interface GlobalEventHandlersEventMap {
+		beforeShow: CustomEvent;
+		afterShow: CustomEvent;
+		beforeHide: CustomEvent;
+		afterHide: CustomEvent;
+	}
+}
+
+/**
  * Options
  */
 interface Options {
 	/** Type (button tooltip or title tooltip) */
 	type: "button" | "title";
-	/** Element (selector sting or HTMLElement) */
+	/** Element (selector string or HTMLElement) */
 	element: string | HTMLElement | null;
 	/** Choose tooltip placement */
 	placement: Placement;
@@ -99,6 +112,7 @@ export class WebcimesTooltip
 		if(this.tooltip.classList.contains("show") && e.propertyName == "opacity")
 		{
 			// Callback after show tooltip
+			this.tooltipRef!.dispatchEvent(new CustomEvent("afterShow"));
 			this.tooltip.dispatchEvent(new CustomEvent("afterShow"));
 			if(typeof this.options.afterShow === 'function')
 			{
@@ -195,6 +209,7 @@ export class WebcimesTooltip
 				if(!this.tooltip.tooltipAlreadyShow)
 				{
 					setTimeout(() => {
+						this.tooltipRef!.dispatchEvent(new CustomEvent("beforeShow"));
 						this.tooltip.dispatchEvent(new CustomEvent("beforeShow"));
 						if(typeof this.options.beforeShow === 'function')
 						{
@@ -242,6 +257,14 @@ export class WebcimesTooltip
 	{
 		if(this.tooltip)
 		{
+			// Callback before hide tooltip
+			this.tooltipRef!.dispatchEvent(new CustomEvent("beforeHide"));
+			this.tooltip.dispatchEvent(new CustomEvent("beforeHide"));
+			if(typeof this.options.beforeHide === 'function')
+			{
+				this.options.beforeHide();
+			}
+
 			// Clear tooltipShowTimeout
 			clearTimeout(this.tooltip.tooltipShowTimeout);
 
@@ -269,6 +292,14 @@ export class WebcimesTooltip
 				delete this.tooltip?.tooltipAlreadyShow;
 				delete this.tooltip?.tooltipShowTimeout;
 				delete this.tooltip?.tooltipHideTimeout;
+
+				// Callback after hide tooltip
+				this.tooltipRef!.dispatchEvent(new CustomEvent("afterHide"));
+				this.tooltip.dispatchEvent(new CustomEvent("afterHide"));
+				if(typeof this.options.afterHide === 'function')
+				{
+					this.options.afterHide();
+				}
 				
 				// Callback
 				if(typeof callback === 'function')

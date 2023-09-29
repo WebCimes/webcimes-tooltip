@@ -7,7 +7,8 @@
         <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 		<title>Demo webcimes-tooltip</title>
         <link rel="stylesheet" href="../dist/css/webcimes-tooltip.css">
-		<script type="module" src="script.js"></script>
+        <script src="../dist/js/webcimes-tooltip.udm.js" type="text/javascript"></script>
+		<script type="module" src="script_udm.js"></script>
     </head>
     <body>
         <h3>Basic tooltip example:</h3>
@@ -16,11 +17,11 @@
             <div>
                 My content<br>
                 <div style='color:red;'>red</div>
-                <div style='color:blue;'>blue</div>
+                <div style='color:aqua;'>blue</div>
             </div>
         </div>
         <h3>Basic title example:</h3>
-        <span title="My title" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="2000" data-tooltip-arrow="true">My content</span>
+        <span title="My title" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true">My content</span>
         <br>
         <h3>Basic title example with html:</h3>
         <span title="My <span style='color:red;'>red</span> title<br>With some <i>html</i>" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true">My content</span>

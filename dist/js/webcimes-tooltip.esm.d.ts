@@ -6,12 +6,24 @@
 /// <reference types="node" />
 import { Placement, Instance } from '@popperjs/core';
 /**
+ * Global
+ */
+declare global {
+    /** Events */
+    interface GlobalEventHandlersEventMap {
+        beforeShow: CustomEvent;
+        afterShow: CustomEvent;
+        beforeHide: CustomEvent;
+        afterHide: CustomEvent;
+    }
+}
+/**
  * Options
  */
 interface Options {
     /** Type (button tooltip or title tooltip) */
     type: "button" | "title";
-    /** Element (selector sting or HTMLElement) */
+    /** Element (selector string or HTMLElement) */
     element: string | HTMLElement | null;
     /** Choose tooltip placement */
     placement: Placement;

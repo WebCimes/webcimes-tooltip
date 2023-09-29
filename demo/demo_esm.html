@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="Author" content="WebCimes">
+        <meta name="Copyright" content="© https://webcimes.com">
+        <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>Demo webcimes-tooltip</title>
+        <link rel="stylesheet" href="../dist/css/webcimes-tooltip.css">
+		<script type="module" src="script_esm.js"></script>
+    </head>
+    <body>
+        <h3>Basic tooltip example:</h3>
+        <div>
+            <button data-tooltip-placement="auto" data-tooltip-delay="0" data-tooltip-duration="600" data-tooltip-arrow="true">My button</button>
+            <div>
+                My content<br>
+                <div style='color:red;'>red</div>
+                <div style='color:blue;'>blue</div>
+            </div>
+        </div>
+        <h3>Basic title example:</h3>
+        <span title="My title" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true">My content</span>
+        <br>
+        <h3>Basic title example with html:</h3>
+        <span title="My <span style='color:red;'>red</span> title<br>With some <i>html</i>" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true">My content</span>
+    </body>
+</html>
