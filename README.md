@@ -89,10 +89,10 @@ document.addEventListener("DOMContentLoaded", function()
         delay: 0, // optional, default 0
         duration: 600, // optional, default 600
         arrow: true, // optional, default true
-        beforeShow: () => {console.log("before show");}, // callback before show modal
-        afterShow: () => {console.log("after show");}, // callback after show modal
-        beforeHide: () => {console.log("before hide");}, // callback before hide modal
-        afterHide: () => {console.log("after hide");}, // callback after hide modal
+        beforeShow: () => {console.log("before show");}, // callback before show tooltip
+        afterShow: () => {console.log("after show");}, // callback after show tooltip
+        beforeHide: () => {console.log("before hide");}, // callback before hide tooltip
+        afterHide: () => {console.log("after hide");}, // callback after hide tooltip
     });
 
     // Set tooltip title
@@ -104,10 +104,10 @@ document.addEventListener("DOMContentLoaded", function()
             delay: 400, // optional, default 400
             duration: 600, // optional, default 600
             arrow: true, // optional, default true
-            beforeShow: () => {console.log("before show");}, // callback before show modal
-            afterShow: () => {console.log("after show");}, // callback after show modal
-            beforeHide: () => {console.log("before hide");}, // callback before hide modal
-            afterHide: () => {console.log("after hide");}, // callback after hide modal
+            beforeShow: () => {console.log("before show");}, // callback before show tooltip
+            afterShow: () => {console.log("after show");}, // callback after show tooltip
+            beforeHide: () => {console.log("before hide");}, // callback before hide tooltip
+            afterHide: () => {console.log("after hide");}, // callback after hide tooltip
         });
     });
 });
@@ -165,10 +165,10 @@ Multiple events exist, which allow to interact with the tooltip at each step. Yo
 
 ```javascript
 const tooltip = new WebcimesTooltip({
-	beforeShow: () => {console.log("before show");}, // callback before show modal
-	afterShow: () => {console.log("after show");}, // callback after show modal
-	beforeHide: () => {console.log("before hide");}, // callback before hide modal
-	afterHide: () => {console.log("after hide");}, // callback after hide modal
+	beforeShow: () => {console.log("before show");}, // callback before show tooltip
+	afterShow: () => {console.log("after show");}, // callback after show tooltip
+	beforeHide: () => {console.log("before hide");}, // callback before hide tooltip
+	afterHide: () => {console.log("after hide");}, // callback after hide tooltip
 });
 ```
 
