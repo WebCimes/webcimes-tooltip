@@ -22,8 +22,8 @@
 .webcimesTooltip
 {
 	--tooltip-color: #fff;
-	--tooltip-background: #444;
-	--tooltip-border-color: #666;
+	--tooltip-background: #222;
+	--tooltip-border-color: #888;
 	--tooltip-duration: 0s;
 
 	position: absolute;

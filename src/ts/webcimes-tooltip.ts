@@ -342,7 +342,7 @@ export class WebcimesTooltip
 			if(this.tooltipRef && this.tooltip)
 			{
 				// add class webcimesToolTip
-				this.tooltip.classList.add("webcimesTooltip");
+				this.tooltip.classList.add("webcimesTooltip", "button");
 
 				// Tooltip button (show)
 				this.tooltipRef.addEventListener("click", (e) => {
