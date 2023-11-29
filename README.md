@@ -77,7 +77,7 @@ You can directly load the udm module in the script tag:
 
 ### Call `WebcimesTooltip` for create tooltip:
 ```javascript
-// Wait for dom content loaded or call webcimesTooltip before the end of body
+// Wait for dom content loaded or call WebcimesTooltip before the end of body
 document.addEventListener("DOMContentLoaded", function()
 {
 
@@ -195,7 +195,7 @@ You can style tooltips with `--tooltip-color`, `--tooltip-background` and `--too
 
 #### Style all tooltips:
 ```css
-.webcimesTooltip
+.webcimes-tooltip
 {
 	--tooltip-color: #fff;
 	--tooltip-background: #222;
@@ -205,7 +205,7 @@ You can style tooltips with `--tooltip-color`, `--tooltip-background` and `--too
 
 #### Style only tooltip button:
 ```css
-.webcimesTooltip.title
+.webcimes-tooltip--button
 {
 	--tooltip-color: #fff;
 	--tooltip-background: #222;
@@ -215,7 +215,7 @@ You can style tooltips with `--tooltip-color`, `--tooltip-background` and `--too
 
 #### Style only tooltip title:
 ```css
-.webcimesTooltip.title
+.webcimes-tooltip--title
 {
 	--tooltip-color: #fff;
 	--tooltip-background: #222;

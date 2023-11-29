@@ -109,7 +109,7 @@ export class WebcimesTooltip
 
 	/** Event tooltip opacity transition end on show class */
 	private eventTransitionEndOnShow: (e: TransitionEvent) => void = (e) => {
-		if(this.tooltip.classList.contains("show") && e.propertyName == "opacity")
+		if(this.tooltip.classList.contains("webcimes-tooltip--show") && e.propertyName == "opacity")
 		{
 			// Callback after show tooltip
 			this.tooltipRef!.dispatchEvent(new CustomEvent("afterShow"));
@@ -180,7 +180,7 @@ export class WebcimesTooltip
 		if(this.tooltipRef && this.tooltip)
 		{
 			// For the type "title", if the tooltip doesn't already exist then add a new one on the dom
-			if(this.options.type == "title" && !document.querySelector(".webcimesTooltip.title#"+this.tooltipRef!.getAttribute("data-tooltip-target")))
+			if(this.options.type == "title" && !document.querySelector(".webcimes-tooltip--title#"+this.tooltipRef!.getAttribute("data-tooltip-target")))
 			{
 				document.body.insertAdjacentHTML("beforeend", this.tooltip!.outerHTML);
 				this.tooltip = document.body.lastElementChild as ThisTooltip;
@@ -194,9 +194,9 @@ export class WebcimesTooltip
 			this.tooltip.style.setProperty("--tooltip-duration", this.tooltip.tooltipDuration+"ms");
 			if(this.tooltip.tooltipArrow)
 			{
-				if(!this.tooltip.querySelector(".arrow"))
+				if(!this.tooltip.querySelector(".webcimes-tooltip__arrow"))
 				{
-					this.tooltip.insertAdjacentHTML("beforeend", '<div class="arrow" data-popper-arrow></div>');
+					this.tooltip.insertAdjacentHTML("beforeend", '<div class="webcimes-tooltip__arrow" data-popper-arrow></div>');
 				}
 			}
 
@@ -219,7 +219,7 @@ export class WebcimesTooltip
 				}
 
 				// Show the tooltip
-				this.tooltip!.classList.add('show');
+				this.tooltip!.classList.add('webcimes-tooltip--show');
 
 				// Set that the tooltip as already show one time
 				this.tooltip!.tooltipAlreadyShow = true;
@@ -269,7 +269,7 @@ export class WebcimesTooltip
 			clearTimeout(this.tooltip.tooltipShowTimeout);
 
 			// Hide the tooltip
-			this.tooltip.classList.remove('show');
+			this.tooltip.classList.remove('webcimes-tooltip--show');
 			
 			// Destroy all events
 			this.tooltip.removeEventListener("transitionend", this.eventTransitionEndOnShow);
@@ -341,8 +341,8 @@ export class WebcimesTooltip
 			this.tooltip = this.tooltipRef.nextElementSibling as HTMLElement;
 			if(this.tooltipRef && this.tooltip)
 			{
-				// add class webcimesToolTip
-				this.tooltip.classList.add("webcimesTooltip", "button");
+				// add class webcimes-tooltip
+				this.tooltip.classList.add("webcimes-tooltip", "webcimes-tooltip--button");
 
 				// Tooltip button (show)
 				this.tooltipRef.addEventListener("click", (e) => {
@@ -352,7 +352,7 @@ export class WebcimesTooltip
 
 				// Tooltip click outside (hide)
 				document.addEventListener("click", (e) => {
-					if(e.target != this.tooltipRef && (e.target as HTMLElement).closest(".webcimesTooltip") != this.tooltip)
+					if(e.target != this.tooltipRef && (e.target as HTMLElement).closest(".webcimes-tooltip") != this.tooltip)
 					{
 						// Hide the tooltip
 						this.hide();
@@ -378,7 +378,7 @@ export class WebcimesTooltip
 			
 			this.tooltipRef!.setAttribute("data-tooltip-target", uniqueID);
 			let tooltip = document.createElement("template");
-			tooltip.innerHTML = '<div class="webcimesTooltip title" id="'+uniqueID+'">'+this.tooltipRef!.getAttribute("data-tooltip-title")+'</div>';
+			tooltip.innerHTML = '<div class="webcimes-tooltip webcimes-tooltip--title" id="'+uniqueID+'">'+this.tooltipRef!.getAttribute("data-tooltip-title")+'</div>';
 			this.tooltip = tooltip.content.firstChild as HTMLElement;
 
 			// On mouseenter / click, create tooltip title
