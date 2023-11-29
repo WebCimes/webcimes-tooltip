@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function()
         type: "button", // optional - default "button"
         element: document.querySelector("button"), // element (selector string or HTMLElement)
         placement: 'auto', // optional, default "auto"
-        delay: 0, // optional, default 0
+        delay: 0, // optional, default 400
         duration: 600, // optional, default 600
         arrow: true, // optional, default true
         beforeShow: () => {console.log("before show");}, // callback before show tooltip
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", function()
         const tooltipTitle = new WebcimesTooltip({
             type: "title", // optional - default "button"
             element: el, // element (selector string or HTMLElement)
-            placement: 'top', // optional, default "top"
+            placement: 'top', // optional, default "auto"
             delay: 400, // optional, default 400
             duration: 600, // optional, default 600
             arrow: true, // optional, default true
