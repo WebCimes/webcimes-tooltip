@@ -238,10 +238,19 @@ export class WebcimesTooltip
 					modifiers:
 					[
 						{
+							// offset between tooltip ref and tooltip
 							name: 'offset',
 							options:
 							{
 								offset: [0, 10],
+							},
+						},
+						{
+							// padding between tooltip and viewport
+							name: 'preventOverflow',
+							options:
+							{
+								padding: 10,
 							},
 						},
 					],

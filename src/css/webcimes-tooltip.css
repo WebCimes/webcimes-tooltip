@@ -63,8 +63,10 @@
 }
 .webcimes-tooltip__arrow::before
 {
-	visibility: visible;
 	content: '';
+	top: 0;
+	left: 0;
+	visibility: visible;
 	transform: rotate(45deg);
 	border-color: var(--tooltip-border-color);
 	border-style: solid;
