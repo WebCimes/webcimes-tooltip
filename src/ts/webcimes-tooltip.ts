@@ -253,6 +253,14 @@ export class WebcimesTooltip
 								padding: 10,
 							},
 						},
+						{
+							// padding arrow from the edges of the popper
+							name: 'arrow',
+							options: 
+							{
+								padding: 10, 
+							},
+						},
 					],
 				});
 			}
