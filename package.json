@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/WebCimes/webcimes-tooltip#readme",
   "dependencies": {
-    "@popperjs/core": "^2.11.6"
+    "@floating-ui/dom": "^1.5.3"
   },
   "devDependencies": {
     "css-loader": "^6.8.1",

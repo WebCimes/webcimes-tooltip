@@ -4,8 +4,8 @@
  * Date: 2023-03-25
  */
 
-// Popper
-import { createPopper, Placement, Instance } from '@popperjs/core';
+// Floating ui
+import { computePosition, autoUpdate, Placement, offset, flip, shift, limitShift, arrow } from '@floating-ui/dom';
 
 /**
  * Global
@@ -64,8 +64,8 @@ interface ThisTooltip extends HTMLElement {
 	tooltipPlacement?: Placement;
 	/** tooltip arrow */
 	tooltipArrow?: boolean;
-	/** popper instance */
-	popper?: Instance;
+	/** cleanUp cleanUp */
+	cleanUpFloatingUi?: () => void;
 }
 // type ThisTooltipOrNull = ThisTooltip | null;
 
@@ -83,7 +83,7 @@ export class WebcimesTooltip
 		const defaults: Options = {
 			type: "button",
 			element: null,
-			placement: "auto",
+			placement: "bottom",
 			delay: 400,
 			duration: 600,
 			arrow: true,
@@ -103,6 +103,9 @@ export class WebcimesTooltip
 
 	/** Get the dom element of the tooltip */
 	public tooltip: ThisTooltip;
+	
+	/** Get the dom element of the tooltip arrow */
+	public tooltipArrow: HTMLElement | null;
 
 	/** Options of the current tooltip */
 	private options: Options;
@@ -194,9 +197,10 @@ export class WebcimesTooltip
 			this.tooltip.style.setProperty("--tooltip-duration", this.tooltip.tooltipDuration+"ms");
 			if(this.tooltip.tooltipArrow)
 			{
-				if(!this.tooltip.querySelector(".webcimes-tooltip__arrow"))
+				if(!this.tooltipArrow)
 				{
-					this.tooltip.insertAdjacentHTML("beforeend", '<div class="webcimes-tooltip__arrow" data-popper-arrow></div>');
+					this.tooltip.insertAdjacentHTML("beforeend", '<div class="webcimes-tooltip__arrow"></div>');
+					this.tooltipArrow = this.tooltip.querySelector(".webcimes-tooltip__arrow");
 				}
 			}
 
@@ -229,39 +233,59 @@ export class WebcimesTooltip
 			// Callback after show tooltip
 			this.tooltip.addEventListener("transitionend", this.eventTransitionEndOnShow);
 
-			// Create popper on the tooltip if doesn't exist
-			if(typeof this.tooltip.popper === "undefined")
+			// Create floatingUi on the tooltip if doesn't exist
+			if(typeof this.tooltip.cleanUpFloatingUi === "undefined")
 			{
-				this.tooltip.popper = createPopper(this.tooltipRef, this.tooltip, {
+				let options = 
+				{
 					placement: this.tooltip.tooltipPlacement,
-					strategy: 'absolute',
-					modifiers:
-					[
-						{
-							// offset between tooltip ref and tooltip
-							name: 'offset',
-							options:
-							{
-								offset: [0, 10],
-							},
-						},
-						{
-							// padding between tooltip and viewport
-							name: 'preventOverflow',
-							options:
-							{
-								padding: 10,
-							},
-						},
-						{
-							// padding arrow from the edges of the popper
-							name: 'arrow',
-							options: 
-							{
-								padding: 10, 
-							},
-						},
+					middleware: [
+						offset(10), // offset between tooltip ref and tooltip
+						flip(), // Automatically flip the tooltip on scroll or resize
+						shift({
+							padding: 10, // padding between tooltip and viewport
+							limiter: limitShift({ // prevent detachtment from tooltipRef
+    							offset: 30, // Start limiting 30px earlier
+							}),
+						}),
 					],
+				};
+				if(this.tooltipArrow)
+				{
+					options.middleware.push(arrow({
+						element: this.tooltipArrow!,
+						padding: 10, // padding arrow from the edges of the tooltip
+					}));
+				}
+				
+				this.tooltip.cleanUpFloatingUi = autoUpdate(this.tooltipRef, this.tooltip, () => {
+					computePosition(this.tooltipRef!, this.tooltip, options).then(({x, y, middlewareData, placement}) => {
+						this.tooltip.setAttribute("data-tooltip-placement", placement);
+						Object.assign(this.tooltip.style, {
+							left: `${x}px`,
+							top: `${y}px`,
+						});
+						if(this.tooltipArrow && middlewareData.arrow)
+						{
+							const arrowLen = this.tooltipArrow.offsetWidth;
+							const side = placement.split("-")[0];
+							const staticSide = {
+								top: "bottom",
+								right: "left",
+								bottom: "top",
+								left: "right"
+							}[side]!;
+							const { x, y } = middlewareData.arrow;
+
+							Object.assign(this.tooltipArrow.style, {
+								left: x != null ? `${x}px` : "",
+								top: y != null ? `${y}px` : "",
+								right: "",
+								bottom: "",
+								[staticSide]: `${-arrowLen / 2}px`,
+							});
+						}
+					});
 				});
 			}
 		}
@@ -294,11 +318,11 @@ export class WebcimesTooltip
 			// Create tooltipHideTimeout
 			this.tooltip.tooltipHideTimeout = setTimeout(() => {
 
-				// Destroy popper if exist
-				if(typeof this.tooltip?.popper !== "undefined")
+				// Destroy floatingUi if exist
+				if(typeof this.tooltip?.cleanUpFloatingUi !== "undefined")
 				{
-					this.tooltip.popper.destroy();
-					delete this.tooltip.popper;
+					this.tooltip.cleanUpFloatingUi();
+					delete this.tooltip.cleanUpFloatingUi;
 				}
 
 				// Delete variables of the tooltip element

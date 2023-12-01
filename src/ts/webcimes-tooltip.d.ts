@@ -4,7 +4,7 @@
  * Date: 2023-03-25
  */
 /// <reference types="node" />
-import { Placement, Instance } from '@popperjs/core';
+import { Placement } from '@floating-ui/dom';
 /**
  * Global
  */
@@ -60,8 +60,8 @@ interface ThisTooltip extends HTMLElement {
     tooltipPlacement?: Placement;
     /** tooltip arrow */
     tooltipArrow?: boolean;
-    /** popper instance */
-    popper?: Instance;
+    /** cleanUp cleanUp */
+    cleanUpFloatingUi?: () => void;
 }
 /**
  * Class WebcimesTooltip
@@ -75,6 +75,8 @@ export declare class WebcimesTooltip {
     tooltipRef: HTMLElement | null;
     /** Get the dom element of the tooltip */
     tooltip: ThisTooltip;
+    /** Get the dom element of the tooltip arrow */
+    tooltipArrow: HTMLElement | null;
     /** Options of the current tooltip */
     private options;
     /** Event tooltip opacity transition end on show class */
