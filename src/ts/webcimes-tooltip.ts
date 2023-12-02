@@ -367,6 +367,9 @@ export class WebcimesTooltip
 		// Define tooltipRef
 		this.tooltipRef = this.getHtmlElement(this.options.element);
 
+		// Add class webcimes-tooltip-ref
+		this.tooltipRef?.classList.add("webcimes-tooltip-ref");
+
 		// Init type button
 		if(this.options.type == "button")
 		{
@@ -400,7 +403,7 @@ export class WebcimesTooltip
 
 				// Tooltip click outside (hide)
 				document.addEventListener("click", (e) => {
-					if(e.target != this.tooltipRef && (e.target as HTMLElement).closest(".webcimes-tooltip") != this.tooltip)
+					if((e.target as HTMLElement).closest(".webcimes-tooltip-ref") != this.tooltipRef && (e.target as HTMLElement).closest(".webcimes-tooltip") != this.tooltip)
 					{
 						// Hide the tooltip
 						this.hide();
