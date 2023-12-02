@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function()
     const tooltipButton = new WebcimesTooltip({
         type: "button", // Type (button tooltip or title tooltip), default "button"
         element: document.querySelector("button"), // Element (selector string or HTMLElement)
-        placement: "bottom", // Choose tooltip placement, default "bottom"
+        placement: "bottom", // Choose tooltip placement, default "bottom" for type "button" and "top" for type "title"
         delay: 0, // Delay before show the tooltip, default 0
         duration: 600, // Duration of animation for show the tooltip, default 600
         arrow: true, // Generate an arrow for the tooltip, default true
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", function()
         const tooltipTitle = new WebcimesTooltip({
             type: "title", // Type (button tooltip or title tooltip), default "button"
             element: el, // Element (selector string or HTMLElement)
-            placement: 'top', // Choose tooltip placement, default "bottom"
+            placement: 'top', // Choose tooltip placement, default "bottom" for type "button" and "top" for type "title"
             delay: 400, // Delay before show the tooltip, default 0
             duration: 600, // Duration of animation for show the tooltip, default 600
             arrow: true, // Generate an arrow for the tooltip, default true
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function()
 The `type` option can be set to `button` or `title`:
 - if set to `button` it will be used as drop-down tooltip, also immediately after the button we need to set the drop-down tooltip that will be used by the button:
 ```html
-<button data-tooltip-placement="auto" data-tooltip-delay="0" data-tooltip-duration="600" data-tooltip-arrow="true">My button</button>
+<button data-tooltip-placement="bottom" data-tooltip-delay="0" data-tooltip-duration="600" data-tooltip-arrow="true">My button</button>
 <div>
 	My tooltip content
 </div>

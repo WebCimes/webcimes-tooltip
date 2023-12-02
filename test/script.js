@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function()
     const tooltipButton = new WebcimesTooltip({
         type: "button", // Type (button tooltip or title tooltip), default "button"
         element: document.querySelector("button"), // Element (selector string or HTMLElement)
-        placement: "bottom", // Choose tooltip placement, default "bottom"
+        placement: "bottom", // Choose tooltip placement, default "bottom" for type "button" and "top" for type "title"
         delay: 0, // Delay before show the tooltip, default 0 for type "button"
         duration: 600, // Duration of animation for show the tooltip, default 600
         arrow: true, // Generate an arrow for the tooltip, default true
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function()
         const tooltipTitle = new WebcimesTooltip({
             type: "title", // Type (button tooltip or title tooltip), default "button"
             element: el, // Element (selector string or HTMLElement)
-            placement: 'top', // Choose tooltip placement, default "bottom"
+            placement: 'top', // Choose tooltip placement, default "bottom" for type "button" and "top" for type "title"
             delay: 400, // Delay before show the tooltip, default 400 for type "title"
             duration: 600, // Duration of animation for show the tooltip, default 600
             arrow: true, // Generate an arrow for the tooltip, default true
