@@ -1,8 +1,8 @@
 # webcimes-tooltip
 
-Create and animate tooltips simply, for dropdowns tooltips and titles tooltips. It works with vanilla javascript + html + css and with popper dependency.
+Create and animate tooltips simply, for dropdowns tooltips and titles tooltips. It works with vanilla javascript + html + css and with floating-ui dependency.
 
-Popper is needed for intelligy placement of tooltips.
+Floating-ui is needed for intelligy placement of tooltips.
 
 Once the `webcimes-tooltip` javascript is defined, we can simply call the WebcimesTooltip class with the desired options.
 
@@ -24,7 +24,7 @@ You can use an importmap to resolve the arbitrary module names to complete paths
         <script type="importmap">
         {
             "imports": {
-                "@popperjs/core": "./node_modules/@popperjs/core/dist/esm/index.js",
+                "@floating-ui/dom": "./node_modules/@floating-ui/core/dist/floating-ui.core.esm.js",
                 "webcimes-tooltip": "./node_modules/webcimes-tooltip/dist/js/webcimes-tooltip.esm.js"
             }
         }
@@ -83,12 +83,12 @@ document.addEventListener("DOMContentLoaded", function()
 
     // Set tooltip button
     const tooltipButton = new WebcimesTooltip({
-        type: "button", // optional - default "button"
-        element: document.querySelector("button"), // element (selector string or HTMLElement)
-        placement: 'auto', // optional, default "auto"
-        delay: 0, // optional, default 400
-        duration: 600, // optional, default 600
-        arrow: true, // optional, default true
+        type: "button", // Type (button tooltip or title tooltip), default "button"
+        element: document.querySelector("button"), // Element (selector string or HTMLElement)
+        placement: "bottom", // Choose tooltip placement, default "bottom"
+        delay: 0, // Delay before show the tooltip, default 0
+        duration: 600, // Duration of animation for show the tooltip, default 600
+        arrow: true, // Generate an arrow for the tooltip, default true
         beforeShow: () => {console.log("before show");}, // callback before show tooltip
         afterShow: () => {console.log("after show");}, // callback after show tooltip
         beforeHide: () => {console.log("before hide");}, // callback before hide tooltip
@@ -98,12 +98,13 @@ document.addEventListener("DOMContentLoaded", function()
     // Set tooltip title
     document.querySelectorAll("[title]").forEach((el) => {
         const tooltipTitle = new WebcimesTooltip({
-            type: "title", // optional - default "button"
-            element: el, // element (selector string or HTMLElement)
-            placement: 'top', // optional, default "auto"
-            delay: 400, // optional, default 400
-            duration: 600, // optional, default 600
-            arrow: true, // optional, default true
+            type: "title", // Type (button tooltip or title tooltip), default "button"
+            element: el, // Element (selector string or HTMLElement)
+            placement: 'top', // Choose tooltip placement, default "bottom"
+            delay: 400, // Delay before show the tooltip, default 0
+            duration: 600, // Duration of animation for show the tooltip, default 600
+            arrow: true, // Generate an arrow for the tooltip, default true
+            hideOnHover: true, // Hide the tooltip when the mouse hover the tooltip (only for type "title"), default true
             beforeShow: () => {console.log("before show");}, // callback before show tooltip
             afterShow: () => {console.log("after show");}, // callback after show tooltip
             beforeHide: () => {console.log("before hide");}, // callback before hide tooltip
@@ -124,14 +125,14 @@ The `type` option can be set to `button` or `title`:
 ```
 - If set to `title`, the module will automatically replace the `title` attribute with `data-tooltip-title`.
 ```html
-<span title="My title" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true">My content</span>
+<span title="My title" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true" data-tooltip-hide-on-hover="true">My content</span>
 ```
 
 ### Other options:
-The `placement`, `delay`, `duration` and `arrow` attributes define the default attributes that will apply to all tooltips.
+The `placement`, `delay`, `duration`, `arrow` and `hideOnHover` attributes define the default attributes that will apply to all tooltips.
 
 ### HTML data attribute options:
-The attribute `data-tooltip-placement`, `data-tooltip-delay`, `data-tooltip-duration` and `data-tooltip-arrow` are optionnals, and it permit to set individual options for each tooltips created. Or you can also define this option directly from the js instance `WebcimesTooltip`.
+The attribute `data-tooltip-placement`, `data-tooltip-delay`, `data-tooltip-duration`, `data-tooltip-arrow` and `data-tooltip-hide-on-hover` are optionnals, and it permit to set individual options for each tooltips created. Or you can also define this option directly from the js instance `WebcimesTooltip`.
 
 ### Get dom element
 You can get the dom element of the current tooltip like this:
@@ -156,6 +157,18 @@ const myTooltip = new WebcimesTooltip(...);
 
 // Then get the dom reference element of the current tooltip
 myTooltip.tooltipRef;
+```
+
+Or you can get the arrow element of the tooltip:
+
+```javascript
+// Get the instance
+const myTooltip = new WebcimesTooltip(...);
+
+// Things
+
+// Then get the dom element of the current tooltip arrow
+myTooltip.tooltipArrow;
 ```
 
 But with the option `type` set to `title` only `myTooltip.tooltipRef` will work (because the `tooltip` title is created on mouse-in and destroyed on mouse-out).
@@ -191,7 +204,7 @@ You can use `myTooltip.tooltipRef` or `myTooltip.tooltip` to attach it to `addEv
 But with the option `type` set to `title` only `myTooltip.tooltipRef` will work to attach it to `addEventListener` (because the `tooltip` title is created on mouse-in and destroyed on mouse-out).
 
 ### Style tooltips:
-You can style tooltips with `--tooltip-color`, `--tooltip-background` and `--tooltip-border-color`.
+You can style tooltips with `--tooltip-color`, `--tooltip-background`, `--tooltip-arrow-width`, `--tooltip-arrow-height` and `--tooltip-border-color`.
 
 #### Style all tooltips:
 ```css
@@ -200,6 +213,8 @@ You can style tooltips with `--tooltip-color`, `--tooltip-background` and `--too
 	--tooltip-color: #fff;
 	--tooltip-background: #222;
 	--tooltip-border-color: #888;
+	--tooltip-arrow-width: 8px;
+	--tooltip-arrow-height: 8px;
 }
 ```
 
@@ -210,6 +225,8 @@ You can style tooltips with `--tooltip-color`, `--tooltip-background` and `--too
 	--tooltip-color: #fff;
 	--tooltip-background: #222;
 	--tooltip-border-color: #888;
+	--tooltip-arrow-width: 8px;
+	--tooltip-arrow-height: 8px;
 }
 ```
 
@@ -220,6 +237,8 @@ You can style tooltips with `--tooltip-color`, `--tooltip-background` and `--too
 	--tooltip-color: #fff;
 	--tooltip-background: #222;
 	--tooltip-border-color: #888;
+	--tooltip-arrow-width: 8px;
+	--tooltip-arrow-height: 8px;
 }
 ```
 

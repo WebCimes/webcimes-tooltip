@@ -21,18 +21,20 @@ declare global {
  * Options
  */
 interface Options {
-    /** Type (button tooltip or title tooltip) */
+    /** Type (button tooltip or title tooltip), default "button" */
     type: "button" | "title";
     /** Element (selector string or HTMLElement) */
     element: string | HTMLElement | null;
-    /** Choose tooltip placement */
+    /** Choose tooltip placement, default "bottom" */
     placement: Placement;
-    /** Delay before show the tooltip */
+    /** Delay before show the tooltip, default 0 for type "button" and 400 for type "title" */
     delay: number;
-    /** Duration of animation for show the tooltip */
+    /** Duration of animation for show the tooltip, default 600 */
     duration: number;
-    /** Generate an arrow for the tooltip*/
+    /** Generate an arrow for the tooltip, default true */
     arrow: boolean;
+    /** Hide the tooltip when the mouse hover the tooltip (only for type "title"), default true */
+    hideOnHover: boolean;
     /** callback before show tooltip */
     beforeShow: () => void;
     /** callback after show tooltip */
@@ -60,6 +62,8 @@ interface ThisTooltip extends HTMLElement {
     tooltipPlacement?: Placement;
     /** tooltip arrow */
     tooltipArrow?: boolean;
+    /** tooltip hide on hover */
+    tooltipHideOnHover?: boolean;
     /** cleanUp cleanUp */
     cleanUpFloatingUi?: () => void;
 }

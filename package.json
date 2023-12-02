@@ -1,7 +1,7 @@
 {
   "name": "webcimes-tooltip",
-  "version": "1.2.2",
-  "description": "Create and animate tooltips simply, for dropdowns tooltips from button and titles tooltips. It works with vanilla javascript + html + css and with popper dependency.",
+  "version": "2.0.0",
+  "description": "Create and animate tooltips simply, for dropdowns tooltips from button and titles tooltips. It works with vanilla javascript + html + css and with floating-ui dependency.",
   "main": "./dist/js/webcimes-tooltip.udm.js",
   "module": "./dist/js/webcimes-tooltip.esm.js",
   "types": "./src/ts/webcimes-tooltip.d.ts",

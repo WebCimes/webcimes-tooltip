@@ -24,18 +24,20 @@ declare global {
  * Options
  */
 interface Options {
-	/** Type (button tooltip or title tooltip) */
+	/** Type (button tooltip or title tooltip), default "button" */
 	type: "button" | "title";
 	/** Element (selector string or HTMLElement) */
 	element: string | HTMLElement | null;
-	/** Choose tooltip placement */
+	/** Choose tooltip placement, default "bottom" */
 	placement: Placement;
-	/** Delay before show the tooltip */
+	/** Delay before show the tooltip, default 0 for type "button" and 400 for type "title" */
 	delay: number;
-	/** Duration of animation for show the tooltip */
+	/** Duration of animation for show the tooltip, default 600 */
 	duration: number;
-	/** Generate an arrow for the tooltip*/
+	/** Generate an arrow for the tooltip, default true */
 	arrow: boolean;
+	/** Hide the tooltip when the mouse hover the tooltip (only for type "title"), default true */
+	hideOnHover: boolean;
 	/** callback before show tooltip */
 	beforeShow: () => void;
 	/** callback after show tooltip */
@@ -64,6 +66,8 @@ interface ThisTooltip extends HTMLElement {
 	tooltipPlacement?: Placement;
 	/** tooltip arrow */
 	tooltipArrow?: boolean;
+	/** tooltip hide on hover */
+	tooltipHideOnHover?: boolean;
 	/** cleanUp cleanUp */
 	cleanUpFloatingUi?: () => void;
 }
@@ -84,9 +88,10 @@ export class WebcimesTooltip
 			type: "button",
 			element: null,
 			placement: "bottom",
-			delay: 400,
+			delay: (options.type && options.type=="title" ? 400 : 0),
 			duration: 600,
 			arrow: true,
+			hideOnHover: true,
 			beforeShow: () => {},
 			afterShow: () => {},
 			beforeHide: () => {},
@@ -194,6 +199,7 @@ export class WebcimesTooltip
 			this.tooltip.tooltipDelay = (this.tooltipRef.getAttribute('data-tooltip-delay') || this.options.delay) as number;
 			this.tooltip.tooltipDuration = (this.tooltipRef.getAttribute('data-tooltip-duration') || this.options.duration) as number;
 			this.tooltip.tooltipArrow = (JSON.parse((this.tooltipRef.getAttribute('data-tooltip-arrow') || this.options.arrow) as string)) as boolean;
+			this.tooltip.tooltipHideOnHover = (JSON.parse((this.tooltipRef.getAttribute('data-tooltip-hide-on-hover') || this.options.hideOnHover) as string)) as boolean;
 			this.tooltip.style.setProperty("--tooltip-duration", this.tooltip.tooltipDuration+"ms");
 			if(this.tooltip.tooltipArrow)
 			{
@@ -330,6 +336,7 @@ export class WebcimesTooltip
 				delete this.tooltip?.tooltipDelay;
 				delete this.tooltip?.tooltipDuration;
 				delete this.tooltip?.tooltipArrow;
+				delete this.tooltip?.tooltipHideOnHover;
 				delete this.tooltip?.tooltipAlreadyShow;
 				delete this.tooltip?.tooltipShowTimeout;
 				delete this.tooltip?.tooltipHideTimeout;
@@ -424,7 +431,7 @@ export class WebcimesTooltip
 
 			// On mouseenter / click, create tooltip title
 			document.addEventListener("mouseenter", (e) => {
-				if(e.target == this.tooltipRef || e.target == this.tooltip)
+				if(e.target == this.tooltipRef || (!this.tooltip.tooltipHideOnHover && e.target == this.tooltip))
 				{
 					// Show the tooltip
 					this.show();
@@ -433,7 +440,7 @@ export class WebcimesTooltip
 
 			// On mouseleave, hide, remove and destroy tooltip title
 			document.addEventListener("mouseleave", (e) => {
-				if(e.target == this.tooltipRef || e.target == this.tooltip)
+				if(e.target == this.tooltipRef || (!this.tooltip.tooltipHideOnHover && e.target == this.tooltip))
 				{
 					// Hide the tooltip
 					this.hide(() =>

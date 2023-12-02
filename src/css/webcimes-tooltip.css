@@ -24,6 +24,8 @@
 	--tooltip-color: #fff;
 	--tooltip-background: #222;
 	--tooltip-border-color: #888;
+	--tooltip-arrow-width: 8px;
+	--tooltip-arrow-height: 8px;
 	--tooltip-duration: 0s;
 
 	position: absolute;
@@ -56,8 +58,8 @@
 .webcimes-tooltip__arrow
 {
 	position: absolute;
-	width: 8px;
-	height: 8px;
+	width: var(--tooltip-arrow-width);
+	height: var(--tooltip-arrow-height);
 	background: inherit;
 	transform: rotate(45deg);
 	
