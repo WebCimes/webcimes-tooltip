@@ -25,7 +25,7 @@ interface Options {
     type: "button" | "title";
     /** Element (selector string or HTMLElement) */
     element: string | HTMLElement | null;
-    /** Choose tooltip placement, default "bottom" */
+    /** Choose tooltip placement, default "bottom" for type "button" and "top" for type "title" */
     placement: Placement;
     /** Delay before show the tooltip, default 0 for type "button" and 400 for type "title" */
     delay: number;
