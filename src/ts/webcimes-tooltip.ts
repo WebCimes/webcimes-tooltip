@@ -68,7 +68,7 @@ interface ThisTooltip extends HTMLElement {
 	tooltipArrow?: boolean;
 	/** tooltip hide on hover */
 	tooltipHideOnHover?: boolean;
-	/** cleanUp cleanUp */
+	/** cleanUp floating ui */
 	cleanUpFloatingUi?: () => void;
 }
 // type ThisTooltipOrNull = ThisTooltip | null;
@@ -203,11 +203,11 @@ export class WebcimesTooltip
 			this.tooltip.style.setProperty("--tooltip-duration", this.tooltip.tooltipDuration+"ms");
 			if(this.tooltip.tooltipArrow)
 			{
-				if(!this.tooltipArrow)
+				if(!this.tooltip.querySelector(".webcimes-tooltip__arrow"))
 				{
 					this.tooltip.insertAdjacentHTML("beforeend", '<div class="webcimes-tooltip__arrow"></div>');
-					this.tooltipArrow = this.tooltip.querySelector(".webcimes-tooltip__arrow");
 				}
+				this.tooltipArrow = this.tooltip.querySelector(".webcimes-tooltip__arrow");
 			}
 
 			// Clear tooltipHideTimeout
@@ -247,7 +247,9 @@ export class WebcimesTooltip
 					placement: this.tooltip.tooltipPlacement,
 					middleware: [
 						offset(10), // offset between tooltip ref and tooltip
-						flip(), // Automatically flip the tooltip on scroll or resize
+						flip({ // Automatically flip the tooltip on scroll or resize
+							fallbackPlacements: ['top', 'bottom', 'left', 'right'],
+						}),
 						shift({
 							padding: 10, // padding between tooltip and viewport
 							limiter: limitShift({ // prevent detachtment from tooltipRef
@@ -282,7 +284,7 @@ export class WebcimesTooltip
 								left: "right"
 							}[side]!;
 							const { x, y } = middlewareData.arrow;
-
+							
 							Object.assign(this.tooltipArrow.style, {
 								left: x != null ? `${x}px` : "",
 								top: y != null ? `${y}px` : "",

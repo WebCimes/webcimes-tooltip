@@ -64,7 +64,7 @@ interface ThisTooltip extends HTMLElement {
     tooltipArrow?: boolean;
     /** tooltip hide on hover */
     tooltipHideOnHover?: boolean;
-    /** cleanUp cleanUp */
+    /** cleanUp floating ui */
     cleanUpFloatingUi?: () => void;
 }
 /**
