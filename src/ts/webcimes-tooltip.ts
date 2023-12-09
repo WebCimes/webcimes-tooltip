@@ -78,6 +78,18 @@ interface ThisTooltip extends HTMLElement {
  */
 export class WebcimesTooltip
 {
+	/** Get the dom element of the tooltip ref */
+	public tooltipRef: HTMLElement | null;
+
+	/** Get the dom element of the tooltip */
+	public tooltip: ThisTooltip;
+	
+	/** Get the dom element of the tooltip arrow */
+	public tooltipArrow: HTMLElement | null;
+
+	/** Options of the current tooltip */
+	private options: Options;
+
 	/**
 	 * Create tooltip
 	 */
@@ -99,52 +111,18 @@ export class WebcimesTooltip
 		}
 		this.options = {...defaults, ...options};
 
+		// Bind "this" to all events
+		this.onTransitionEndOnShow = this.onTransitionEndOnShow.bind(this);
+		
 		// Call init method
 		this.init();
 	}
 
-	/** Get the dom element of the tooltip ref */
-	public tooltipRef: HTMLElement | null;
-
-	/** Get the dom element of the tooltip */
-	public tooltip: ThisTooltip;
-	
-	/** Get the dom element of the tooltip arrow */
-	public tooltipArrow: HTMLElement | null;
-
-	/** Options of the current tooltip */
-	private options: Options;
-
-	/** Event tooltip opacity transition end on show class */
-	private eventTransitionEndOnShow: (e: TransitionEvent) => void = (e) => {
-		if(this.tooltip.classList.contains("webcimes-tooltip--show") && e.propertyName == "opacity")
-		{
-			// Callback after show tooltip
-			this.tooltipRef!.dispatchEvent(new CustomEvent("afterShow"));
-			this.tooltip.dispatchEvent(new CustomEvent("afterShow"));
-			if(typeof this.options.afterShow === 'function')
-			{
-				this.options.afterShow();
-			}
-		}
-	};
-
-	/**
-	 * Get a unique ID, related to the prefix
-	 */
-	private getUniqueID = (prefix: string) => {
-		do
-		{
-			prefix += Math.floor(Math.random()*10000);
-		} while (document.querySelector("[data-tooltip-target='"+prefix+"']"));
-		
-		return prefix;
-	};
-
 	/**
 	 * Convert elements entry to an array of HTMLElement
 	 */
-	private getHtmlElements = (element: string | HTMLElement | NodeList | null) => {
+	private getHtmlElements(element: string | HTMLElement | NodeList | null)
+	{
 		// Convert options.element to an array of HTMLElement
 		let htmlElements: HTMLElement[] = [];
 		if(element instanceof NodeList)
@@ -160,13 +138,13 @@ export class WebcimesTooltip
 			htmlElements = [...Array.from(document.querySelectorAll(element)) as HTMLElement[]];
 		}
 		return htmlElements;
-	};
-
+	}
 
 	/**
 	 * Convert element entry to an HTMLElement
 	 */
-	private getHtmlElement = (element: string | HTMLElement | null) => {
+	private getHtmlElement(element: string | HTMLElement | null)
+	{
 		// Convert options.element to an array of HTMLElement
 		let htmlElement: HTMLElement | null = null;
 		if(element instanceof HTMLElement)
@@ -178,6 +156,42 @@ export class WebcimesTooltip
 			htmlElement = document.querySelector(element) as HTMLElement | null;
 		}
 		return htmlElement;
+	}
+
+	/**
+	 * Get a unique ID, related to the prefix
+	 */
+	private getUniqueID(prefix: string)
+	{
+		do
+		{
+			prefix += Math.floor(Math.random()*10000);
+		} while (document.querySelector("[data-tooltip-target='"+prefix+"']"));
+		
+		return prefix;
+	}
+
+	/**
+	 * Initialization of the current tooltip
+	 */
+    private init()
+	{
+		// Define tooltipRef
+		this.tooltipRef = this.getHtmlElement(this.options.element);
+
+		// Add class webcimes-tooltip-ref
+		this.tooltipRef?.classList.add("webcimes-tooltip-ref");
+
+		// Init type button
+		if(this.options.type == "button")
+		{
+			this.tooltipForButton();
+		}
+		// Init type title
+		else if(this.options.type == "title")
+		{
+			this.tooltipForTitle();
+		}
 	};
 
 	/**
@@ -237,7 +251,7 @@ export class WebcimesTooltip
 			}, (this.tooltip.tooltipAlreadyShow?0:this.tooltip.tooltipDelay));
 
 			// Callback after show tooltip
-			this.tooltip.addEventListener("transitionend", this.eventTransitionEndOnShow);
+			this.tooltip.addEventListener("transitionend", this.onTransitionEndOnShow);
 
 			// Create floatingUi on the tooltip if doesn't exist
 			if(typeof this.tooltip.cleanUpFloatingUi === "undefined")
@@ -321,7 +335,7 @@ export class WebcimesTooltip
 			this.tooltip.classList.remove('webcimes-tooltip--show');
 			
 			// Destroy all events
-			this.tooltip.removeEventListener("transitionend", this.eventTransitionEndOnShow);
+			this.tooltip.removeEventListener("transitionend", this.onTransitionEndOnShow);
 
 			// Create tooltipHideTimeout
 			this.tooltip.tooltipHideTimeout = setTimeout(() => {
@@ -360,29 +374,6 @@ export class WebcimesTooltip
 			}, this.tooltip.tooltipDuration);
 		}
 	}
-
-	/**
-	 * Initialization of the current tooltip
-	 */
-    private init()
-	{
-		// Define tooltipRef
-		this.tooltipRef = this.getHtmlElement(this.options.element);
-
-		// Add class webcimes-tooltip-ref
-		this.tooltipRef?.classList.add("webcimes-tooltip-ref");
-
-		// Init type button
-		if(this.options.type == "button")
-		{
-			this.tooltipForButton();
-		}
-		// Init type title
-		else if(this.options.type == "title")
-		{
-			this.tooltipForTitle();
-		}
-	};
 
 	/**
 	 * Create automatically tooltip for button
@@ -455,6 +446,21 @@ export class WebcimesTooltip
 					});
 				}
 			}, true);
+		}
+	}
+
+	/** Event tooltip opacity transition end on show class */
+	private onTransitionEndOnShow(e: TransitionEvent)
+	{
+		if(this.tooltip.classList.contains("webcimes-tooltip--show") && e.propertyName == "opacity")
+		{
+			// Callback after show tooltip
+			this.tooltipRef!.dispatchEvent(new CustomEvent("afterShow"));
+			this.tooltip.dispatchEvent(new CustomEvent("afterShow"));
+			if(typeof this.options.afterShow === 'function')
+			{
+				this.options.afterShow();
+			}
 		}
 	}
 }

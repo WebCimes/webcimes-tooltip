@@ -71,10 +71,6 @@ interface ThisTooltip extends HTMLElement {
  * Class WebcimesTooltip
  */
 export declare class WebcimesTooltip {
-    /**
-     * Create tooltip
-     */
-    constructor(options: Options);
     /** Get the dom element of the tooltip ref */
     tooltipRef: HTMLElement | null;
     /** Get the dom element of the tooltip */
@@ -83,12 +79,10 @@ export declare class WebcimesTooltip {
     tooltipArrow: HTMLElement | null;
     /** Options of the current tooltip */
     private options;
-    /** Event tooltip opacity transition end on show class */
-    private eventTransitionEndOnShow;
     /**
-     * Get a unique ID, related to the prefix
+     * Create tooltip
      */
-    private getUniqueID;
+    constructor(options: Options);
     /**
      * Convert elements entry to an array of HTMLElement
      */
@@ -98,6 +92,14 @@ export declare class WebcimesTooltip {
      */
     private getHtmlElement;
     /**
+     * Get a unique ID, related to the prefix
+     */
+    private getUniqueID;
+    /**
+     * Initialization of the current tooltip
+     */
+    private init;
+    /**
      * Show the tooltip
      */
     show(): void;
@@ -106,10 +108,6 @@ export declare class WebcimesTooltip {
      */
     hide(callback?: () => void): void;
     /**
-     * Initialization of the current tooltip
-     */
-    private init;
-    /**
      * Create automatically tooltip for button
      */
     private tooltipForButton;
@@ -117,6 +115,8 @@ export declare class WebcimesTooltip {
      * Create automatically tooltip for title
      */
     private tooltipForTitle;
+    /** Event tooltip opacity transition end on show class */
+    private onTransitionEndOnShow;
 }
 export {};
 //# sourceMappingURL=webcimes-tooltip.d.ts.map
