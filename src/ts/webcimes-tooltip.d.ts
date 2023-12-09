@@ -36,13 +36,13 @@ interface Options {
     /** Hide the tooltip when the mouse hover the tooltip (only for type "title"), default true */
     hideOnHover: boolean;
     /** callback before show tooltip */
-    beforeShow: () => void;
+    beforeShow(): void;
     /** callback after show tooltip */
-    afterShow: () => void;
+    afterShow(): void;
     /** callback before destroy tooltip */
-    beforeHide: () => void;
+    beforeHide(): void;
     /** callback after destroy tooltip */
-    afterHide: () => void;
+    afterHide(): void;
 }
 /**
  * ThisTooltip
