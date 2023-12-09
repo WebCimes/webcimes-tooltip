@@ -389,8 +389,8 @@ export class WebcimesTooltip
 			tooltip.innerHTML = '<div class="webcimes-tooltip webcimes-tooltip--button" id="'+uniqueID+'">'+this.tooltipRef.nextElementSibling?.outerHTML+'</div>';
 			this.tooltip = tooltip.content.firstChild as HTMLElement;
 
-			// Hide original tooltip element
-			(this.tooltipRef.nextElementSibling as HTMLElement).style.display = "none";
+			// Remove origin tooltip node
+			this.tooltipRef.nextElementSibling?.remove();
 
 			// Tooltip button (show)
 			this.tooltipRef.addEventListener("click", (e) => {
