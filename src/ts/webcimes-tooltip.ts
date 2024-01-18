@@ -93,7 +93,7 @@ export class WebcimesTooltip
 	/**
 	 * Create tooltip
 	 */
-	constructor(options: Options)
+	constructor(options: Partial<Options>)
 	{
 		// Defaults
 		const defaults: Options = {

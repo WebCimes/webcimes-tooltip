@@ -82,7 +82,7 @@ export declare class WebcimesTooltip {
     /**
      * Create tooltip
      */
-    constructor(options: Options);
+    constructor(options: Partial<Options>);
     /**
      * Convert elements entry to an array of HTMLElement
      */
