@@ -269,6 +269,7 @@ export class WebcimesTooltip
 						}),
 						flip({ // Automatically flip the tooltip on scroll or resize
 							fallbackPlacements: ['top', 'bottom', 'left', 'right'],
+							padding: 10, // padding between tooltip and edge of the boundary before flip
 						}),
 					],
 				};
