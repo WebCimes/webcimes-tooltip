@@ -261,14 +261,14 @@ export class WebcimesTooltip
 					placement: this.tooltip.tooltipPlacement,
 					middleware: [
 						offset(10), // offset between tooltip ref and tooltip
-						flip({ // Automatically flip the tooltip on scroll or resize
-							fallbackPlacements: ['top', 'bottom', 'left', 'right'],
-						}),
-						shift({
+						shift({ // shift before flip for prevent wrong final placement
 							padding: 10, // padding between tooltip and viewport
 							limiter: limitShift({ // prevent detachtment from tooltipRef
     							offset: 30, // Start limiting 30px earlier
 							}),
+						}),
+						flip({ // Automatically flip the tooltip on scroll or resize
+							fallbackPlacements: ['top', 'bottom', 'left', 'right'],
 						}),
 					],
 				};
