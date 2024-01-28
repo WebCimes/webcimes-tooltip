@@ -25,6 +25,10 @@ interface Options {
     type: "button" | "title";
     /** Element (selector string or HTMLElement) */
     element: string | HTMLElement | null;
+    /** set a specific id on the tooltip. default "null" */
+    setId: string | null;
+    /** set a specific class on the tooltip, default "null" */
+    setClass: string | null;
     /** Choose tooltip placement, default "bottom" for type "button" and "top" for type "title" */
     placement: Placement;
     /** Delay before show the tooltip, default 0 for type "button" and 400 for type "title" */
@@ -33,6 +37,8 @@ interface Options {
     duration: number;
     /** Generate an arrow for the tooltip, default true */
     arrow: boolean;
+    /** add extra css style to tooltip, default null */
+    style: string | null;
     /** Hide the tooltip when the mouse hover the tooltip (only for type "title"), default true */
     hideOnHover: boolean;
     /** callback before show tooltip */

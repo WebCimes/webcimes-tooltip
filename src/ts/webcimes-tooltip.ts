@@ -28,6 +28,10 @@ interface Options {
 	type: "button" | "title";
 	/** Element (selector string or HTMLElement) */
 	element: string | HTMLElement | null;
+	/** set a specific id on the tooltip. default "null" */
+	setId: string | null;
+	/** set a specific class on the tooltip, default "null" */
+	setClass: string | null;
 	/** Choose tooltip placement, default "bottom" for type "button" and "top" for type "title" */
 	placement: Placement;
 	/** Delay before show the tooltip, default 0 for type "button" and 400 for type "title" */
@@ -36,6 +40,8 @@ interface Options {
 	duration: number;
 	/** Generate an arrow for the tooltip, default true */
 	arrow: boolean;
+	/** add extra css style to tooltip, default null */
+	style: string | null;
 	/** Hide the tooltip when the mouse hover the tooltip (only for type "title"), default true */
 	hideOnHover: boolean;
 	/** callback before show tooltip */
@@ -99,10 +105,13 @@ export class WebcimesTooltip
 		const defaults: Options = {
 			type: "button",
 			element: null,
+			setId: null,
+			setClass: null,
 			placement: (options.type && options.type=="title" ? "top" : "bottom"),
 			delay: (options.type && options.type=="title" ? 400 : 0),
 			duration: 600,
 			arrow: true,
+			style: null,
 			hideOnHover: true,
 			beforeShow: () => {},
 			afterShow: () => {},
@@ -202,7 +211,7 @@ export class WebcimesTooltip
 		if(this.tooltipRef && this.tooltip)
 		{
 			// If the tooltip doesn't already exist then add a new one on the dom
-			if(!document.querySelector(".webcimes-tooltip#"+this.tooltipRef!.getAttribute("data-tooltip-target")))
+			if(!document.querySelector(`.webcimes-tooltip[data-ref="${this.tooltipRef!.getAttribute("data-tooltip-target")}"]`))
 			{
 				document.body.insertAdjacentHTML("beforeend", this.tooltip!.outerHTML);
 				this.tooltip = document.body.lastElementChild as ThisTooltip;
@@ -387,7 +396,7 @@ export class WebcimesTooltip
 			const uniqueID = this.getUniqueID("tooltipButton");
 			this.tooltipRef!.setAttribute("data-tooltip-target", uniqueID);
 			let tooltip = document.createElement("template");
-			tooltip.innerHTML = '<div class="webcimes-tooltip webcimes-tooltip--button" id="'+uniqueID+'">'+this.tooltipRef.nextElementSibling?.outerHTML+'</div>';
+			tooltip.innerHTML = `<div class="webcimes-tooltip webcimes-tooltip--button ${(this.options.setClass?this.options.setClass:``)}" ${(this.options.setId?`id="${this.options.setId}"`:``)} data-ref="${uniqueID}" ${(this.options.style?`style="${this.options.style}"`:``)}>${this.tooltipRef.nextElementSibling?.outerHTML}</div>`;
 			this.tooltip = tooltip.content.firstChild as HTMLElement;
 
 			// Remove origin tooltip node
@@ -429,7 +438,7 @@ export class WebcimesTooltip
 			const uniqueID = this.getUniqueID("tooltipTitle");
 			this.tooltipRef!.setAttribute("data-tooltip-target", uniqueID);
 			let tooltip = document.createElement("template");
-			tooltip.innerHTML = '<div class="webcimes-tooltip webcimes-tooltip--title" id="'+uniqueID+'">'+this.tooltipRef!.getAttribute("data-tooltip-title")+'</div>';
+			tooltip.innerHTML = `<div class="webcimes-tooltip webcimes-tooltip--title ${(this.options.setClass?this.options.setClass:``)}" ${(this.options.setId?`id="${this.options.setId}"`:``)} data-ref="${uniqueID}" ${(this.options.style?`style="${this.options.style}"`:``)}>${this.tooltipRef!.getAttribute("data-tooltip-title")}</div>`;
 			this.tooltip = tooltip.content.firstChild as HTMLElement;
 
 			// On mouseenter / click, create tooltip title
