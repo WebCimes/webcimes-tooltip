@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function()
         setClass: "toto lala",
         setId: "IDButton",
         style: "background:red; color:blue;",
+        ariaLabel: "My aria label", 
         beforeShow: () => {console.log("before show");}, // callback before show tooltip
         afterShow: () => {console.log("after show");}, // callback after show tooltip
         beforeHide: () => {console.log("before hide");}, // callback before hide tooltip

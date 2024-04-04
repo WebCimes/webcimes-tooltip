@@ -39,6 +39,8 @@ interface Options {
     arrow: boolean;
     /** add extra css style to tooltip, default null */
     style: string | null;
+    /** set aria-label for the tooltip, default null */
+    ariaLabel: string | null;
     /** Hide the tooltip when the mouse hover the tooltip (only for type "title"), default true */
     hideOnHover: boolean;
     /** callback before show tooltip */

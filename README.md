@@ -94,6 +94,7 @@ document.addEventListener("DOMContentLoaded", function()
         duration: 600, // Duration of animation for show the tooltip, default 600
         arrow: true, // Generate an arrow for the tooltip, default true
         style: null, // add extra css style to tooltip, default null
+        ariaLabel: null, // set aria-label for the tooltip, default null
         beforeShow: () => {console.log("before show");}, // callback before show tooltip
         afterShow: () => {console.log("after show");}, // callback after show tooltip
         beforeHide: () => {console.log("before hide");}, // callback before hide tooltip
@@ -112,6 +113,7 @@ document.addEventListener("DOMContentLoaded", function()
             duration: 600, // Duration of animation for show the tooltip, default 600
             arrow: true, // Generate an arrow for the tooltip, default true
             style: null, // add extra css style to tooltip, default null
+            ariaLabel: null, // set aria-label for the tooltip, default null
             hideOnHover: true, // Hide the tooltip when the mouse hover the tooltip (only for type "title"), default true
             beforeShow: () => {console.log("before show");}, // callback before show tooltip
             afterShow: () => {console.log("after show");}, // callback after show tooltip
@@ -147,6 +149,19 @@ For accessibility reasons, you can also automatically open the tooltip by focusi
 If you want to open the tooltip with focus on a non-focusable element like `<div>` or `<span>`, you can define a `tabindex="0"` with a specific `role` to your element, ex:
 ```html
 <div title="My title" tabindex="0" role="button">My button</div>
+```
+
+### Aria label:
+You can set aria label for your button or title reference directly with the `aria-label` attribute like this:
+```html
+<button title="My title" aria-label="Label for my button">My button</button>
+```
+
+If you want to set the aria-label for the tooltip, you can use the `ariaLabel` attribute like this:
+```javascript
+const tooltip = new WebcimesTooltip({
+    ariaLabel: "Label for the tooltip", // set aria-label for the tooltip, default null
+});
 ```
 
 ### Other options:

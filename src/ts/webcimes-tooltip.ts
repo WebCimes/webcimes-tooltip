@@ -42,6 +42,8 @@ interface Options {
 	arrow: boolean;
 	/** add extra css style to tooltip, default null */
 	style: string | null;
+	/** set aria-label for the tooltip, default null */
+	ariaLabel: string | null;
 	/** Hide the tooltip when the mouse hover the tooltip (only for type "title"), default true */
 	hideOnHover: boolean;
 	/** callback before show tooltip */
@@ -112,6 +114,7 @@ export class WebcimesTooltip
 			duration: 600,
 			arrow: true,
 			style: null,
+			ariaLabel: null,
 			hideOnHover: true,
 			beforeShow: () => {},
 			afterShow: () => {},
@@ -447,7 +450,7 @@ export class WebcimesTooltip
 			// Create tooltip element without adding it to the dom
 			let tooltip = document.createElement("template");
 			tooltip.innerHTML = 
-			`<div class="webcimes-tooltip webcimes-tooltip--button ${(this.options.setClass?this.options.setClass:``)}" id="${tooltipID}" ${(this.options.style?`style="${this.options.style}"`:``)} role="dialog" tabindex="0">
+			`<div class="webcimes-tooltip webcimes-tooltip--button ${(this.options.setClass?this.options.setClass:``)}" id="${tooltipID}" ${(this.options.style?`style="${this.options.style}"`:``)} role="dialog" ${this.options.ariaLabel?`aria-label="${this.options.ariaLabel}"`:``} tabindex="0">
 				${this.tooltipRef.nextElementSibling?.outerHTML}
 			</div>`;
 			this.tooltip = tooltip.content.firstChild as HTMLElement;
@@ -511,7 +514,7 @@ export class WebcimesTooltip
 			this.tooltipRef!.setAttribute("data-tooltip-target", tooltipID);
 			let tooltip = document.createElement("template");
 			tooltip.innerHTML = 
-			`<div class="webcimes-tooltip webcimes-tooltip--title ${(this.options.setClass?this.options.setClass:``)}" id="${tooltipID}" ${(this.options.style?`style="${this.options.style}"`:``)} role="tooltip">
+			`<div class="webcimes-tooltip webcimes-tooltip--title ${(this.options.setClass?this.options.setClass:``)}" id="${tooltipID}" ${(this.options.style?`style="${this.options.style}"`:``)} role="tooltip" ${this.options.ariaLabel?`aria-label="${this.options.ariaLabel}"`:``}>
 				${this.tooltipRef!.getAttribute("data-tooltip-title")}
 			</div>`;
 			this.tooltip = tooltip.content.firstChild as HTMLElement;
