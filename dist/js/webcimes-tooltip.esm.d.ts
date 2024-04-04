@@ -98,7 +98,11 @@ export declare class WebcimesTooltip {
      */
     private getHtmlElement;
     /**
-     * Get a unique ID, related to the prefix
+     * Get a unique ID, related to the identifier
+     * @param selectorPrefix Prefix of the selector
+     * @param identifier Identifier to find
+     * @param selectorSuffix Suffix of the selector
+     * @param element Find if the ID already exist in provided dom element
      */
     private getUniqueID;
     /**
@@ -121,6 +125,8 @@ export declare class WebcimesTooltip {
      * Create automatically tooltip for title
      */
     private tooltipForTitle;
+    /** Event tooltip keydown */
+    private onKeyDown;
     /** Event tooltip opacity transition end on show class */
     private onTransitionEndOnShow;
 }

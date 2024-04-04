@@ -4,6 +4,8 @@ Create and animate tooltips simply, for dropdowns tooltips and titles tooltips. 
 
 Floating-ui is needed for intelligy placement of tooltips.
 
+`webcimes-tooltip` also comes with full support for web accessibility and screen readers.
+
 Once the `webcimes-tooltip` javascript is defined, we can simply call the WebcimesTooltip class with the desired options.
 
 ## Installation
@@ -122,16 +124,29 @@ document.addEventListener("DOMContentLoaded", function()
 
 ### Type of tooltip:
 The `type` option can be set to `button` or `title`:
-- if set to `button` it will be used as drop-down tooltip, also immediately after the button we need to set the drop-down tooltip that will be used by the button:
+
+#### Button
+If set to `button` it will be used as dropdown tooltip, also immediately after the button we need to set the drop-down tooltip that will be used by the button:
 ```html
 <button data-tooltip-placement="bottom" data-tooltip-delay="0" data-tooltip-duration="600" data-tooltip-arrow="true">My button</button>
 <div>
 	My tooltip content
 </div>
 ```
-- If set to `title`, the module will automatically replace the `title` attribute with `data-tooltip-title`.
+Note that the `div` tag immediately following the button, will be automatically hidden by `webcimes-tooltip`.
+
+For accessibility, you can also focus the button and open the dropdown tooltip after pressing the `Enter` or `Space` key. Then you can also close the dropdown tooltip by pressing the `Esc` or `Tab` key.
+
+#### Title
+If set to `title`, the module will automatically replace the `title` attribute with `data-tooltip-title`.
 ```html
-<span title="My title" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true" data-tooltip-hide-on-hover="true">My content</span>
+<button title="My title" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true" data-tooltip-hide-on-hover="true">My button</button>
+```
+For accessibility reasons, you can also automatically open the tooltip by focusing a natively focusable element like `<button>` or `<input>`.
+
+If you want to open the tooltip with focus on a non-focusable element like `<div>` or `<span>`, you can define a `tabindex="0"` with a specific `role` to your element, ex:
+```html
+<div title="My title" tabindex="0" role="button">My button</div>
 ```
 
 ### Other options:

@@ -7,13 +7,13 @@ document.addEventListener("DOMContentLoaded", function()
     // Set tooltip button
     const tooltipButton = new WebcimesTooltip({
         type: "button", // Type (button tooltip or title tooltip), default "button"
-        element: document.querySelector("button"), // Element (selector string or HTMLElement)
+        element: document.querySelector("#myButton"), // Element (selector string or HTMLElement)
         placement: "bottom", // Choose tooltip placement, default "bottom" for type "button" and "top" for type "title"
         delay: 0, // Delay before show the tooltip, default 0 for type "button"
         duration: 600, // Duration of animation for show the tooltip, default 600
         arrow: true, // Generate an arrow for the tooltip, default true
         setClass: "toto lala",
-        setId: "monID",
+        setId: "IDButton",
         style: "background:red; color:blue;",
         beforeShow: () => {console.log("before show");}, // callback before show tooltip
         afterShow: () => {console.log("after show");}, // callback after show tooltip
@@ -31,8 +31,8 @@ document.addEventListener("DOMContentLoaded", function()
             duration: 600, // Duration of animation for show the tooltip, default 600
             arrow: true, // Generate an arrow for the tooltip, default true
             hideOnHover: true, // Hide the tooltip when the mouse hover the tooltip (only for type "title"), default true
-            setClass: "toto lala",
-            setId: "monID",
+            setClass: "tata lala",
+            // setId: "IDTitle",
             style: "background:red; color:blue;",
             beforeShow: () => {console.log("before show");}, // callback before show tooltip
             afterShow: () => {console.log("after show");}, // callback after show tooltip

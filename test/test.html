@@ -9,14 +9,14 @@
         <link rel="stylesheet" href="../dist/css/webcimes-tooltip.css">
 		<script type="module" src="script.js"></script>
     </head>
-    <body style="text-align: right;">
+    <body>
         <div style="width:2000px; height:2000px;">
             <h3>Basic title example:</h3>
-            <span title="My titletitletitletitletitle dsfdsf sdftitle" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true" data-tooltip-hide-on-hover="true">My</span>
+            <span title="My titletitletitletitletitle dsfdsf sdftitle" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true" data-tooltip-hide-on-hover="true" tabindex="0" role="button">My</span>
             <br>
             <h3>Basic tooltip example:</h3>
             <div>
-                <button data-tooltip-placement="bottom" data-tooltip-delay="0" data-tooltip-duration="600" data-tooltip-arrow="true">My button</button>
+                <span id="myButton" data-tooltip-placement="bottom" data-tooltip-delay="0" data-tooltip-duration="600" data-tooltip-arrow="true">My button</span>
                 <div>
                     My content<br>
                     <div style='color:red;'>red</div>
@@ -24,7 +24,9 @@
                 </div>
             </div>
             <h3>Basic title example with html:</h3>
-            <span title="My <span style='color:red;'>red</span> title<br>With some <i>html</i>" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true" data-tooltip-hide-on-hover="false">My <span>content</span></span>
+            <button title="My <span style='color:red;'>red</span> title<br>With some <i>html</i>" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true" data-tooltip-hide-on-hover="false">My <span>content</span></button>
+            <br>
+            <input type="text" name="dsf" value="" placeholder="" title="Hola" autocomplete="off">
         </div>
     </body>
 </html>

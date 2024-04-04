@@ -121,6 +121,7 @@ export class WebcimesTooltip
 		this.options = {...defaults, ...options};
 
 		// Bind "this" to all events
+		this.onKeyDown = this.onKeyDown.bind(this);
 		this.onTransitionEndOnShow = this.onTransitionEndOnShow.bind(this);
 		
 		// Call init method
@@ -168,16 +169,24 @@ export class WebcimesTooltip
 	}
 
 	/**
-	 * Get a unique ID, related to the prefix
+	 * Get a unique ID, related to the identifier
+	 * @param selectorPrefix Prefix of the selector
+	 * @param identifier Identifier to find
+	 * @param selectorSuffix Suffix of the selector
+	 * @param element Find if the ID already exist in provided dom element
 	 */
-	private getUniqueID(prefix: string)
+	private getUniqueID(selectorPrefix: string, identifier: string, selectorSuffix: string = "", element: HTMLElement | Document | DocumentFragment | null = null)
 	{
+		// If element is null, set document
+		element = element ?? document;
+		
+		// Generate a unique ID
 		do
 		{
-			prefix += Math.floor(Math.random()*10000);
-		} while (document.querySelector("[data-tooltip-target='"+prefix+"']"));
+			identifier += Math.floor(Math.random()*10000);
+		} while (element.querySelector(selectorPrefix + identifier + selectorSuffix));
 		
-		return prefix;
+		return identifier;
 	}
 
 	/**
@@ -211,7 +220,7 @@ export class WebcimesTooltip
 		if(this.tooltipRef && this.tooltip)
 		{
 			// If the tooltip doesn't already exist then add a new one on the dom
-			if(!document.querySelector(`.webcimes-tooltip[data-ref="${this.tooltipRef!.getAttribute("data-tooltip-target")}"]`))
+			if(!document.querySelector(`#${this.tooltipRef!.getAttribute("data-tooltip-target")}`))
 			{
 				document.body.insertAdjacentHTML("beforeend", this.tooltip!.outerHTML);
 				this.tooltip = document.body.lastElementChild as ThisTooltip;
@@ -252,10 +261,29 @@ export class WebcimesTooltip
 				}
 
 				// Show the tooltip
-				this.tooltip!.classList.add('webcimes-tooltip--show');
+				this.tooltip.classList.add('webcimes-tooltip--show');
+
+				// If type is button
+				if(this.options.type == "button")
+				{
+					// Set aria-expended to true on the tooltipRef 
+					this.tooltipRef!.setAttribute("aria-expended", "true");
+
+					// Set focus on the tooltip
+					this.tooltip.focus();
+
+					// Event keydown on the tooltip
+					this.tooltip.addEventListener("keydown", this.onKeyDown);
+				}
+				// If type is title
+				else if(this.options.type == "title")
+				{
+					// Set focus on the tooltipRef
+					// this.tooltipRef!.focus();
+				}
 
 				// Set that the tooltip as already show one time
-				this.tooltip!.tooltipAlreadyShow = true;
+				this.tooltip.tooltipAlreadyShow = true;
 
 			}, (this.tooltip.tooltipAlreadyShow?0:this.tooltip.tooltipDelay));
 
@@ -328,7 +356,8 @@ export class WebcimesTooltip
 	 */
 	public hide(callback?: () => void)
 	{
-		if(this.tooltip)
+		// If the tooltip exist then remove it
+		if(this.tooltip && document.querySelector(`#${this.tooltipRef!.getAttribute("data-tooltip-target")}`))
 		{
 			// Callback before hide tooltip
 			this.tooltipRef!.dispatchEvent(new CustomEvent("beforeHide"));
@@ -343,6 +372,19 @@ export class WebcimesTooltip
 
 			// Hide the tooltip
 			this.tooltip.classList.remove('webcimes-tooltip--show');
+
+			// If type is a button
+			if(this.options.type == "button")
+			{
+				// Set aria-expended to false on the tooltipRef if type is button
+				this.tooltipRef!.setAttribute("aria-expended", "false");
+
+				// Set focus on the tooltipRef
+				this.tooltipRef!.focus();
+
+				// Destroy event keydown on the tooltip
+				this.tooltip.removeEventListener("keydown", this.onKeyDown);
+			}
 			
 			// Destroy all events
 			this.tooltip.removeEventListener("transitionend", this.onTransitionEndOnShow);
@@ -392,33 +434,60 @@ export class WebcimesTooltip
 	{
 		if(this.tooltipRef)
 		{
+			// Tooltip ID
+			const tooltipID = (this.options.setId ? this.options.setId : this.getUniqueID("#", "tooltip-"));
+
+			// Set attributes to the tooltipRef
+			this.tooltipRef!.setAttribute("data-tooltip-target", tooltipID);
+			this.tooltipRef!.setAttribute("role", "button");
+			this.tooltipRef!.setAttribute("aria-expended", "false");
+			this.tooltipRef!.setAttribute("aria-haspopup", "dialog");
+			this.tooltipRef!.setAttribute("tabindex", "0");
+
 			// Create tooltip element without adding it to the dom
-			const uniqueID = this.getUniqueID("tooltipButton");
-			this.tooltipRef!.setAttribute("data-tooltip-target", uniqueID);
 			let tooltip = document.createElement("template");
-			tooltip.innerHTML = `<div class="webcimes-tooltip webcimes-tooltip--button ${(this.options.setClass?this.options.setClass:``)}" ${(this.options.setId?`id="${this.options.setId}"`:``)} data-ref="${uniqueID}" ${(this.options.style?`style="${this.options.style}"`:``)}>${this.tooltipRef.nextElementSibling?.outerHTML}</div>`;
+			tooltip.innerHTML = 
+			`<div class="webcimes-tooltip webcimes-tooltip--button ${(this.options.setClass?this.options.setClass:``)}" id="${tooltipID}" ${(this.options.style?`style="${this.options.style}"`:``)} role="dialog" tabindex="0">
+				${this.tooltipRef.nextElementSibling?.outerHTML}
+			</div>`;
 			this.tooltip = tooltip.content.firstChild as HTMLElement;
 
 			// Remove origin tooltip node
 			this.tooltipRef.nextElementSibling?.remove();
 
-			// Tooltip button (show)
-			this.tooltipRef.addEventListener("click", (e) => {
+			// Event click on the tooltipRef
+			this.tooltipRef.addEventListener("click", () => {
 				// Show the tooltip
 				this.show();
 			});
 
-			// Tooltip click outside (hide)
-			document.addEventListener("click", (e) => {
-				if((e.target as HTMLElement).closest(".webcimes-tooltip-ref") != this.tooltipRef && (e.target as HTMLElement).closest(".webcimes-tooltip") != this.tooltip)
+			// Event keydown on the tooltipRef
+			this.tooltipRef.addEventListener("keydown", (e) => {
+				if(e.key == "Enter" || e.key == " ")
 				{
-					// Hide the tooltip
-					this.hide(() =>
-					{
-						// Remove the tooltip
-						this.tooltip?.remove();
-					});
+					e.preventDefault();
+
+					// Show the tooltip
+					this.show();
 				}
+			});
+
+			// Event click and keydown outside the tooltipRef and tooltip
+			['click', 'keydown'].forEach((typeEvent) => {
+				document.addEventListener(typeEvent, (e) => {
+					if(
+						(e.target as HTMLElement).closest(".webcimes-tooltip-ref") != this.tooltipRef &&
+						(e.target as HTMLElement).closest(".webcimes-tooltip") != this.tooltip
+					)
+					{
+						// Hide the tooltip
+						this.hide(() =>
+						{
+							// Remove the tooltip
+							this.tooltip?.remove();
+						});
+					}
+				});
 			});
 		}
 	}
@@ -430,21 +499,32 @@ export class WebcimesTooltip
 	{
 		if(this.tooltipRef)
 		{
+			// Tooltip ID
+			const tooltipID = (this.options.setId ? this.options.setId : this.getUniqueID("#", "tooltip-"));
+
 			// Create data-tooltip-title attribute, and remove title attribute
 			this.tooltipRef.setAttribute("data-tooltip-title", this.tooltipRef.getAttribute("title")!);
 			this.tooltipRef.removeAttribute("title");
+			this.tooltipRef.setAttribute("aria-describedby", tooltipID);
 
 			// Create tooltip element without adding it to the dom
-			const uniqueID = this.getUniqueID("tooltipTitle");
-			this.tooltipRef!.setAttribute("data-tooltip-target", uniqueID);
+			this.tooltipRef!.setAttribute("data-tooltip-target", tooltipID);
 			let tooltip = document.createElement("template");
-			tooltip.innerHTML = `<div class="webcimes-tooltip webcimes-tooltip--title ${(this.options.setClass?this.options.setClass:``)}" ${(this.options.setId?`id="${this.options.setId}"`:``)} data-ref="${uniqueID}" ${(this.options.style?`style="${this.options.style}"`:``)}>${this.tooltipRef!.getAttribute("data-tooltip-title")}</div>`;
+			tooltip.innerHTML = 
+			`<div class="webcimes-tooltip webcimes-tooltip--title ${(this.options.setClass?this.options.setClass:``)}" id="${tooltipID}" ${(this.options.style?`style="${this.options.style}"`:``)} role="tooltip">
+				${this.tooltipRef!.getAttribute("data-tooltip-title")}
+			</div>`;
 			this.tooltip = tooltip.content.firstChild as HTMLElement;
+
+			// Current status on hover
+			let tooltipHover = false;
 
 			// On mouseenter / click, create tooltip title
 			document.addEventListener("mouseenter", (e) => {
 				if(e.target == this.tooltipRef || (!this.tooltip.tooltipHideOnHover && e.target == this.tooltip))
 				{
+					tooltipHover = true;
+
 					// Show the tooltip
 					this.show();
 				}
@@ -454,6 +534,8 @@ export class WebcimesTooltip
 			document.addEventListener("mouseleave", (e) => {
 				if(e.target == this.tooltipRef || (!this.tooltip.tooltipHideOnHover && e.target == this.tooltip))
 				{
+					tooltipHover = false;
+
 					// Hide the tooltip
 					this.hide(() =>
 					{
@@ -462,6 +544,56 @@ export class WebcimesTooltip
 					});
 				}
 			}, true);
+
+			// Event focus on the tooltipRef
+			this.tooltipRef.addEventListener("focus", () => {
+				// Show the tooltip
+				this.show();
+			});
+
+			// Event focusout on the tooltipRef
+			this.tooltipRef.addEventListener("focusout", (e) => {
+				if(!tooltipHover)
+				{
+					// Hide the tooltip
+					this.hide(() =>
+					{
+						// Remove the tooltip
+						this.tooltip?.remove();
+					});
+				}
+			});
+
+			// Event keydown on the tooltipRef
+			this.tooltipRef.addEventListener("keydown", (e) => {
+				if(e.key == "Escape")
+				{
+					e.preventDefault();
+
+					// Hide the tooltip
+					this.hide(() =>
+					{
+						// Remove the tooltip
+						this.tooltip?.remove();
+					});
+				}
+			});
+		}
+	}
+
+	/** Event tooltip keydown */
+	private onKeyDown(e: KeyboardEvent)
+	{
+		if(e.key == "Escape" || e.key == "Tab")
+		{
+			e.preventDefault();
+
+			// Hide the tooltip
+			this.hide(() =>
+			{
+				// Remove the tooltip
+				this.tooltip?.remove();
+			});
 		}
 	}
 
