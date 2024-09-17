@@ -137,7 +137,7 @@ If set to `button` it will be used as dropdown tooltip, also immediately after t
 	My tooltip content
 </div>
 ```
-Note that the `div` tag immediately following the button will be automatically hidden by `webcimes-tooltip`. However, to avoid the element briefly appearing before being hidden by the script, it's better to initially set `display: none` in your CSS on the element. Once the script is loaded, the `display` style will be automatically removed.
+Note that the `div` tag immediately following the button will be automatically hidden by `webcimes-tooltip`. However, to avoid the element briefly appearing before being hidden by the script, it's better to initially set `display: none` in your style attribute on the element. Once the script is loaded, the `display` style will be automatically removed.
 
 If you prefer, you can also set the `content` option with a specific class or ID to target the content, eliminating the need to create an element immediately after the button.
 
@@ -148,7 +148,7 @@ If set to `title`, the module will automatically replace the `title` attribute w
 ```html
 <button title="My title" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true" data-tooltip-hide-on-hover="true">My button</button>
 ```
-If you prefer, you can also set the `content` option with a specific class or ID to target the content, eliminating the need to create a title attribut. However, to avoid the element briefly appearing before being hidden by the script, it's better to initially set `display: none` in your CSS on the element. Once the script is loaded, the `display` style will be automatically removed.
+If you prefer, you can also set the `content` option with a specific class or ID to target the content, eliminating the need to create a title attribut. However, to avoid the element briefly appearing before being hidden by the script, it's better to initially set `display: none` in your style attribute on the element. Once the script is loaded, the `display` style will be automatically removed.
 
 For accessibility reasons, you can also automatically open the tooltip by focusing a natively focusable element like `<button>` or `<input>`.
 
