@@ -23,8 +23,10 @@ declare global {
 interface Options {
     /** Type (button tooltip or title tooltip), default "button" */
     type: "button" | "title";
-    /** Element (selector string or HTMLElement) */
+    /** Element (selector string or HTMLElement) for the tooltip */
     element: string | HTMLElement | null;
+    /** Content element (selector string or HTMLElement) for the content of the tooltip, default null */
+    contentElement: string | HTMLElement | null;
     /** set a specific id on the tooltip. default "null" */
     setId: string | null;
     /** set a specific class on the tooltip, default "null" */

@@ -14,17 +14,40 @@
             <h3>Basic title example:</h3>
             <span title="My title" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true" data-tooltip-hide-on-hover="true" tabindex="0" role="button">My title</span>
             <br>
+            <br>
+            <h3>Basic title example with html:</h3>
+            <button title="My <span style='color:red;'>red</span> title<br>With some <i>html</i>" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true" data-tooltip-hide-on-hover="false">My <span>content</span></button>
+            <br>
+            <br>
+            <h3>Basic title with content element:</h3>
+            <button id="titleWithContentEl" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true" data-tooltip-hide-on-hover="false">My <span>content</span></button>
+            <div id="myContent1" style="display:none;">
+                My content<br>
+                <div style='color:red;'>red</div>
+                <div style='color:aqua;'>blue</div>
+            </div>
+            <br>
+            <br>
             <h3>Basic tooltip example:</h3>
             <div>
                 <span id="myButton" data-tooltip-placement="bottom" data-tooltip-delay="0" data-tooltip-duration="600" data-tooltip-arrow="true" aria-label="My label">My button</span>
-                <div>
+                <div style="display:none;">
                     My content<br>
                     <div style='color:red;'>red</div>
                     <div style='color:aqua;'>blue</div>
                 </div>
             </div>
-            <h3>Basic title example with html:</h3>
-            <button title="My <span style='color:red;'>red</span> title<br>With some <i>html</i>" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true" data-tooltip-hide-on-hover="false">My <span>content</span></button>
+            <br>
+            <br>
+            <h3>Basic tooltip example with content element:</h3>
+            <div>
+                <span id="myButtonWithContentEl" data-tooltip-placement="bottom" data-tooltip-delay="0" data-tooltip-duration="600" data-tooltip-arrow="true" aria-label="My label">My button</span>
+            </div>
+            <div id="myContent2" style="display:none;">
+                My content<br>
+                <div style='color:red;'>red</div>
+                <div style='color:aqua;'>blue</div>
+            </div>
         </div>
     </body>
 </html>

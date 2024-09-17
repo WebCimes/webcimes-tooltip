@@ -86,7 +86,8 @@ document.addEventListener("DOMContentLoaded", function()
     // Set tooltip button
     const tooltipButton = new WebcimesTooltip({
         type: "button", // Type (button tooltip or title tooltip), default "button"
-        element: document.querySelector("button"), // Element (selector string or HTMLElement)
+        element: document.querySelector("button"), // Element (selector string or HTMLElement) for the tooltip
+        content: null, // Content element (selector string or HTMLElement) for the content of the tooltip, default null
         setId: null, // set a specific id on the tooltip. default "null"
         setClass: null, // set a specific class on the tooltip, default "null"
         placement: "bottom", // Choose tooltip placement, default "bottom" for type "button" and "top" for type "title"
@@ -105,7 +106,8 @@ document.addEventListener("DOMContentLoaded", function()
     document.querySelectorAll("[title]").forEach((el) => {
         const tooltipTitle = new WebcimesTooltip({
             type: "title", // Type (button tooltip or title tooltip), default "button"
-            element: el, // Element (selector string or HTMLElement)
+            element: el, // Element (selector string or HTMLElement) for the tooltip
+            content: null, // Content element (selector string or HTMLElement) for the content of the tooltip, default null
             setId: null, // set a specific id on the tooltip. default "null"
             setClass: null, // set a specific class on the tooltip, default "null"
             placement: 'top', // Choose tooltip placement, default "bottom" for type "button" and "top" for type "title"
@@ -130,12 +132,14 @@ The `type` option can be set to `button` or `title`:
 #### Button
 If set to `button` it will be used as dropdown tooltip, also immediately after the button we need to set the drop-down tooltip that will be used by the button:
 ```html
-<button data-tooltip-placement="bottom" data-tooltip-delay="0" data-tooltip-duration="600" data-tooltip-arrow="true">My button</button>
+<button data-tooltip-placement="bottom" data-tooltip-delay="0" data-tooltip-duration="600" data-tooltip-arrow="true" style="display:none;">My button</button>
 <div>
 	My tooltip content
 </div>
 ```
-Note that the `div` tag immediately following the button, will be automatically hidden by `webcimes-tooltip`.
+Note that the `div` tag immediately following the button will be automatically hidden by `webcimes-tooltip`. However, to avoid the element briefly appearing before being hidden by the script, it's better to initially set `display: none` in your CSS on the element. Once the script is loaded, the `display` style will be automatically removed.
+
+If you prefer, you can also set the `content` option with a specific class or ID to target the content, eliminating the need to create an element immediately after the button.
 
 For accessibility, you can also focus the button and open the dropdown tooltip after pressing the `Enter` or `Space` key. Then you can also close the dropdown tooltip by pressing the `Esc` or `Tab` key.
 
@@ -144,6 +148,8 @@ If set to `title`, the module will automatically replace the `title` attribute w
 ```html
 <button title="My title" data-tooltip-placement="top" data-tooltip-delay="400" data-tooltip-duration="600" data-tooltip-arrow="true" data-tooltip-hide-on-hover="true">My button</button>
 ```
+If you prefer, you can also set the `content` option with a specific class or ID to target the content, eliminating the need to create a title attribut. However, to avoid the element briefly appearing before being hidden by the script, it's better to initially set `display: none` in your CSS on the element. Once the script is loaded, the `display` style will be automatically removed.
+
 For accessibility reasons, you can also automatically open the tooltip by focusing a natively focusable element like `<button>` or `<input>`.
 
 If you want to open the tooltip with focus on a non-focusable element like `<div>` or `<span>`, you can define a `tabindex="0"` with a specific `role` to your element, ex:

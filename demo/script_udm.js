@@ -4,7 +4,8 @@ document.addEventListener("DOMContentLoaded", function()
     // Set tooltip button
     const tooltipButton = new WebcimesTooltip({
         type: "button", // Type (button tooltip or title tooltip), default "button"
-        element: document.querySelector("button"), // Element (selector string or HTMLElement)
+        element: document.querySelector("button"), // Element (selector string or HTMLElement) for the tooltip
+        content: null, // Content element (selector string or HTMLElement) for the content of the tooltip, default null
         setId: null, // set a specific class on the tooltip, default "null"
         setClass: null, // set a specific id on the tooltip. default "null"
         placement: "bottom", // Choose tooltip placement, default "bottom" for type "button" and "top" for type "title"
@@ -22,7 +23,8 @@ document.addEventListener("DOMContentLoaded", function()
     document.querySelectorAll("[title]").forEach((el) => {
         const tooltipTitle = new WebcimesTooltip({
             type: "title", // Type (button tooltip or title tooltip), default "button"
-            element: el, // Element (selector string or HTMLElement)
+            element: el, // Element (selector string or HTMLElement) for the tooltip
+            content: null, // Content element (selector string or HTMLElement) for the content of the tooltip, default null
             setId: null, // set a specific class on the tooltip, default "null"
             setClass: null, // set a specific id on the tooltip. default "null"
             placement: 'top', // Choose tooltip placement, default "bottom" for type "button" and "top" for type "title"

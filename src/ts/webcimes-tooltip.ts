@@ -26,8 +26,10 @@ declare global {
 interface Options {
 	/** Type (button tooltip or title tooltip), default "button" */
 	type: "button" | "title";
-	/** Element (selector string or HTMLElement) */
+	/** Element (selector string or HTMLElement) for the tooltip */
 	element: string | HTMLElement | null;
+	/** Content element (selector string or HTMLElement) for the content of the tooltip, default null */
+	contentElement: string | HTMLElement | null;
 	/** set a specific id on the tooltip. default "null" */
 	setId: string | null;
 	/** set a specific class on the tooltip, default "null" */
@@ -107,6 +109,7 @@ export class WebcimesTooltip
 		const defaults: Options = {
 			type: "button",
 			element: null,
+			contentElement: null,
 			setId: null,
 			setClass: null,
 			placement: (options.type && options.type=="title" ? "top" : "bottom"),
@@ -447,16 +450,22 @@ export class WebcimesTooltip
 			this.tooltipRef!.setAttribute("aria-haspopup", "dialog");
 			this.tooltipRef!.setAttribute("tabindex", "0");
 
+			// Tooltip content (if contentElement exist, get the element, else get the next sibling)
+			const tooltipContent: HTMLElement | null = this.getHtmlElement(this.options.contentElement) ?? (this.tooltipRef.nextElementSibling as HTMLElement | null);
+
+			// Remove the display none of the tooltip content
+			tooltipContent?.style.removeProperty("display");
+
 			// Create tooltip element without adding it to the dom
 			let tooltip = document.createElement("template");
 			tooltip.innerHTML = 
 			`<div class="webcimes-tooltip webcimes-tooltip--button ${(this.options.setClass?this.options.setClass:``)}" id="${tooltipID}" ${(this.options.style?`style="${this.options.style}"`:``)} role="dialog" ${this.options.ariaLabel?`aria-label="${this.options.ariaLabel}"`:``} tabindex="0">
-				${this.tooltipRef.nextElementSibling?.outerHTML}
+				${tooltipContent?.outerHTML ?? ''}
 			</div>`;
 			this.tooltip = tooltip.content.firstChild as HTMLElement;
 
 			// Remove origin tooltip node
-			this.tooltipRef.nextElementSibling?.remove();
+			tooltipContent?.remove();
 
 			// Event click on the tooltipRef
 			this.tooltipRef.addEventListener("click", () => {
@@ -505,9 +514,36 @@ export class WebcimesTooltip
 			// Tooltip ID
 			const tooltipID = (this.options.setId ? this.options.setId : this.getUniqueID("#", "tooltip-"));
 
+			// Declare tooltip content
+			let tooltipContent: string | null = null;
+
+			// If contentElement options exist
+			if(this.options.contentElement)
+			{
+				// Get the content element
+				const contentElement = this.getHtmlElement(this.options.contentElement);
+
+				// Remove the display none of the content element
+				contentElement?.style.removeProperty("display");
+
+				// Tooltip content
+				tooltipContent = contentElement?.outerHTML ?? null;
+
+				// Remove the content element
+				contentElement?.remove();
+			}
+			// If contentElement doesn't exist get the title attribute of the tooltipRef
+			else
+			{
+				// Tooltip content
+				tooltipContent = this.tooltipRef.getAttribute("title");
+
+				// Remove the title attribute
+				this.tooltipRef.removeAttribute("title");
+			}
+			
 			// Create data-tooltip-title attribute, and remove title attribute
-			this.tooltipRef.setAttribute("data-tooltip-title", this.tooltipRef.getAttribute("title")!);
-			this.tooltipRef.removeAttribute("title");
+			this.tooltipRef.setAttribute("data-tooltip-title", tooltipContent ?? '');
 			this.tooltipRef.setAttribute("aria-describedby", tooltipID);
 
 			// Create tooltip element without adding it to the dom
