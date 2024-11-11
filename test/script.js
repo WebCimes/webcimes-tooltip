@@ -27,6 +27,9 @@ document.addEventListener("DOMContentLoaded", function()
         setId: "IDButton",
         style: "background:red; color:blue;",
         ariaLabel: "My aria label", 
+        afterShow: function() {
+            this.element.remove();
+        },
     });
 
     // Basic tooltip example with content element

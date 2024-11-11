@@ -360,7 +360,7 @@ export class WebcimesTooltip
 	/**
 	 * Hide the tooltip
 	 */
-	public hide(callback?: () => void)
+	public hide(callback?: () => void, isOutsideEvent: boolean = false)
 	{
 		// If the tooltip exist then remove it
 		if(this.tooltip && document.querySelector(`#${this.tooltipRef!.getAttribute("data-tooltip-target")}`))
@@ -385,8 +385,11 @@ export class WebcimesTooltip
 				// Set aria-expended to false on the tooltipRef if type is button
 				this.tooltipRef!.setAttribute("aria-expended", "false");
 
-				// Set focus on the tooltipRef
-				this.tooltipRef!.focus();
+				// Set focus on the tooltipRef if the event (click or keydown) is not outside the tooltip or tooltipRef, for prevent focus lost
+				if (!(isOutsideEvent))
+				{
+					this.tooltipRef!.focus();
+				}
 
 				// Destroy event keydown on the tooltip
 				this.tooltip.removeEventListener("keydown", this.onKeyDown);
@@ -497,7 +500,7 @@ export class WebcimesTooltip
 						{
 							// Remove the tooltip
 							this.tooltip?.remove();
-						});
+						}, true);
 					}
 				});
 			});

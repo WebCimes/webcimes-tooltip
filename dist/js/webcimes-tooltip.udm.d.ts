@@ -120,7 +120,7 @@ export declare class WebcimesTooltip {
     /**
      * Hide the tooltip
      */
-    hide(callback?: () => void): void;
+    hide(callback?: () => void, isOutsideEvent?: boolean): void;
     /**
      * Create automatically tooltip for button
      */
