@@ -110,6 +110,10 @@ export declare class WebcimesTooltip {
      */
     private getUniqueID;
     /**
+     * Wait for an element to be removed from the DOM, then run a callback function.
+     */
+    private onElementRemoved;
+    /**
      * Initialization of the current tooltip
      */
     private init;

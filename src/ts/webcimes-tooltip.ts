@@ -196,6 +196,52 @@ export class WebcimesTooltip
 	}
 
 	/**
+	 * Wait for an element to be removed from the DOM, then run a callback function.
+	 */
+	private onElementRemoved(
+		selectorOrElement: string | HTMLElement,
+		callback: (element: HTMLElement) => void,
+		observeOnce: boolean = true,
+	) {
+		// Create a MutationObserver to watch for removed nodes
+		const observer = new MutationObserver((mutations) => {
+			mutations.forEach((mutation) => {
+				mutation.removedNodes.forEach((removedNode) => {
+					if (removedNode instanceof HTMLElement) {
+						// Check if selector is a string (CSS selector) or an HTMLElement
+						if (typeof selectorOrElement === 'string') {
+							// Handle case where selectorOrElement is a string (CSS selector)
+							if (removedNode.matches(selectorOrElement)) {
+								callback(removedNode);
+								if (observeOnce) observer.disconnect(); // Stop observing after the first match
+							} else {
+								// Check if any of the removed node's children match the selector
+								const matchingChildren = removedNode.querySelectorAll(selectorOrElement);
+								matchingChildren.forEach((child) => {
+									callback(child as HTMLElement);
+									if (observeOnce) observer.disconnect(); // Stop observing after the first match
+								});
+							}
+						} else {
+							// Handle case where selectorOrElement is an HTMLElement
+							if (removedNode === selectorOrElement || removedNode.contains(selectorOrElement)) {
+								callback(removedNode);
+								if (observeOnce) observer.disconnect(); // Stop observing after the first match
+							}
+						}
+					}
+				});
+			});
+		});
+	
+		// Start observing the DOM for removed nodes
+		observer.observe(document.body, {
+			childList: true,
+			subtree: true // Also observe removals in the entire subtree
+		});
+	}
+
+	/**
 	 * Initialization of the current tooltip
 	 */
     private init()
@@ -216,6 +262,16 @@ export class WebcimesTooltip
 		{
 			this.tooltipForTitle();
 		}
+
+		// Observe the tooltipRef for removal
+		this.onElementRemoved(this.tooltipRef!, (removedElement) => {
+			// Hide the tooltip
+			this.hide(() =>
+			{
+				// Remove the tooltip
+				this.tooltip?.remove();
+			});
+		}, true);
 	};
 
 	/**

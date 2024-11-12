@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function()
         style: "background:red; color:blue;",
         ariaLabel: "My aria label", 
         afterShow: function() {
-            this.element.remove();
+            // document.querySelector("#testRemove").remove();
         },
     });
 
