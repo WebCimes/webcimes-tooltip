@@ -132,8 +132,8 @@ The `type` option can be set to `button` or `title`:
 #### Button
 If set to `button` it will be used as dropdown tooltip, also immediately after the button we need to set the drop-down tooltip that will be used by the button:
 ```html
-<button data-tooltip-placement="bottom" data-tooltip-delay="0" data-tooltip-duration="600" data-tooltip-arrow="true" style="display:none;">My button</button>
-<div>
+<button data-tooltip-placement="bottom" data-tooltip-delay="0" data-tooltip-duration="600" data-tooltip-arrow="true">My button</button>
+<div style="display:none;">
 	My tooltip content
 </div>
 ```
