@@ -14,6 +14,9 @@ document.addEventListener("DOMContentLoaded", function()
     });
 
     // Basic title with content element
+    document.querySelector("#myContent1 .red").addEventListener("click", function() {
+        console.log("Red button clicked");
+    });
     const tooltipTitle2 = new WebcimesTooltip({
         type: "title",
         element: document.querySelector("#titleWithContentEl"),
