@@ -20,7 +20,7 @@ declare global {
 /**
  * Options
  */
-interface Options {
+export interface Options {
     /** Type (button tooltip or title tooltip), default "button" */
     type: "button" | "title";
     /** Element (selector string or HTMLElement) for the tooltip */
@@ -57,7 +57,7 @@ interface Options {
 /**
  * ThisTooltip
  */
-interface ThisTooltip extends HTMLElement {
+export interface ThisTooltip extends HTMLElement {
     /** tooltip show timeout */
     tooltipShowTimeout?: NodeJS.Timeout;
     /** tooltip hide timeout */
@@ -138,5 +138,4 @@ export declare class WebcimesTooltip {
     /** Event tooltip opacity transition end on show class */
     private onTransitionEndOnShow;
 }
-export {};
 //# sourceMappingURL=webcimes-tooltip.d.ts.map
