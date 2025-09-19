@@ -557,47 +557,8 @@ export class WebcimesTooltip
 			this.tooltip?.remove();
 		});
 
-		// Remove all stored event listeners from tooltipRef
-		if(this.tooltipRef && this.eventListeners.tooltipRefClick)
-		{
-			this.tooltipRef.removeEventListener("click", this.eventListeners.tooltipRefClick);
-		}
-		if(this.tooltipRef && this.eventListeners.tooltipRefKeydown)
-		{
-			this.tooltipRef.removeEventListener("keydown", this.eventListeners.tooltipRefKeydown);
-		}
-		if(this.tooltipRef && this.eventListeners.tooltipRefFocus)
-		{
-			this.tooltipRef.removeEventListener("focus", this.eventListeners.tooltipRefFocus);
-		}
-		if(this.tooltipRef && this.eventListeners.tooltipRefFocusout)
-		{
-			this.tooltipRef.removeEventListener("focusout", this.eventListeners.tooltipRefFocusout);
-		}
-
-		// Remove document event listeners
-		if(this.eventListeners.documentClick)
-		{
-			document.removeEventListener("click", this.eventListeners.documentClick);
-		}
-		if(this.eventListeners.documentKeydown)
-		{
-			document.removeEventListener("keydown", this.eventListeners.documentKeydown);
-		}
-		if(this.eventListeners.documentMouseenter)
-		{
-			document.removeEventListener("mouseenter", this.eventListeners.documentMouseenter, true);
-		}
-		if(this.eventListeners.documentMouseleave)
-		{
-			document.removeEventListener("mouseleave", this.eventListeners.documentMouseleave, true);
-		}
-
-		// Remove tooltip event listeners
-		// Note: tooltipKeydown and tooltipTransitionEnd listeners are already removed by hide() method above
-
-		// Clear all event listener references
-		this.eventListeners = {};
+		// Detach all event listeners
+		this.detachEvents();
 
 		// Remove tooltip-related attributes from tooltipRef
 		if(this.tooltipRef)
@@ -620,6 +581,212 @@ export class WebcimesTooltip
 		{
 			this.options.afterDestroy();
 		}
+	}
+
+	/**
+	 * Detach only event listeners, keep DOM structure intact
+	 */
+	detachEvents()
+	{
+		// Remove tooltipRef event listeners
+		if(this.tooltipRef)
+		{
+			if(this.eventListeners.tooltipRefClick)
+			{
+				this.tooltipRef.removeEventListener("click", this.eventListeners.tooltipRefClick);
+			}
+			if(this.eventListeners.tooltipRefKeydown)
+			{
+				this.tooltipRef.removeEventListener("keydown", this.eventListeners.tooltipRefKeydown);
+			}
+			if(this.eventListeners.tooltipRefFocus)
+			{
+				this.tooltipRef.removeEventListener("focus", this.eventListeners.tooltipRefFocus);
+			}
+			if(this.eventListeners.tooltipRefFocusout)
+			{
+				this.tooltipRef.removeEventListener("focusout", this.eventListeners.tooltipRefFocusout);
+			}
+		}
+
+		// Remove document event listeners
+		if(this.eventListeners.documentClick)
+		{
+			document.removeEventListener("click", this.eventListeners.documentClick);
+		}
+		if(this.eventListeners.documentKeydown)
+		{
+			document.removeEventListener("keydown", this.eventListeners.documentKeydown);
+		}
+		if(this.eventListeners.documentMouseenter)
+		{
+			document.removeEventListener("mouseenter", this.eventListeners.documentMouseenter, true);
+		}
+		if(this.eventListeners.documentMouseleave)
+		{
+			document.removeEventListener("mouseleave", this.eventListeners.documentMouseleave, true);
+		}
+
+		// Remove tooltip event listeners
+		if(this.tooltip)
+		{
+			if(this.eventListeners.tooltipKeydown)
+			{
+				this.tooltip.removeEventListener("keydown", this.eventListeners.tooltipKeydown);
+			}
+			if(this.eventListeners.tooltipTransitionEnd)
+			{
+				this.tooltip.removeEventListener("transitionend", this.eventListeners.tooltipTransitionEnd);
+			}
+		}
+
+		// Clear event listener references but keep other references intact
+		this.eventListeners = {};
+	}
+
+	/**
+	 * Reattach event listeners based on tooltip type
+	 */
+	reattachEvents()
+	{
+		if(!this.tooltipRef) return;
+
+		if(this.options.type === "button")
+		{
+			this.attachButtonEvents();
+		}
+		else if(this.options.type === "title")
+		{
+			this.attachTitleEvents();
+		}
+	}
+
+	/**
+	 * Attach events for button type tooltip
+	 */
+	private attachButtonEvents()
+	{
+		if(!this.tooltipRef) return;
+
+		// Event click on the tooltipRef
+		this.eventListeners.tooltipRefClick = () => {
+			this.show();
+		};
+		this.tooltipRef.addEventListener("click", this.eventListeners.tooltipRefClick);
+
+		// Event keydown on the tooltipRef
+		this.eventListeners.tooltipRefKeydown = (e: KeyboardEvent) => {
+			if(e.key == "Enter" || e.key == " ")
+			{
+				e.preventDefault();
+				this.show();
+			}
+		};
+		this.tooltipRef.addEventListener("keydown", this.eventListeners.tooltipRefKeydown);
+
+		// Event click and keydown outside the tooltipRef and tooltip
+		this.eventListeners.documentClick = (e: Event) => {
+			if(
+				(e.target as HTMLElement).closest(".webcimes-tooltip-ref") != this.tooltipRef &&
+				(e.target as HTMLElement).closest(".webcimes-tooltip") != this.tooltip
+			)
+			{
+				this.hide(() =>
+				{
+					this.tooltip?.remove();
+				}, true);
+			}
+		};
+		this.eventListeners.documentKeydown = (e: KeyboardEvent) => {
+			if(
+				(e.target as HTMLElement).closest(".webcimes-tooltip-ref") != this.tooltipRef &&
+				(e.target as HTMLElement).closest(".webcimes-tooltip") != this.tooltip
+			)
+			{
+				this.hide(() =>
+				{
+					this.tooltip?.remove();
+				}, true);
+			}
+		};
+		document.addEventListener("click", this.eventListeners.documentClick);
+		document.addEventListener("keydown", this.eventListeners.documentKeydown);
+	}
+
+	/**
+	 * Attach events for title type tooltip
+	 */
+	private attachTitleEvents()
+	{
+		if(!this.tooltipRef) return;
+
+		// Current status on hover
+		let tooltipHover = false;
+
+		// On mouseenter / click, create tooltip title
+		this.eventListeners.documentMouseenter = (e: MouseEvent) => {
+			if(e.target == this.tooltipRef || (!this.tooltip.tooltipHideOnHover && e.target == this.tooltip))
+			{
+				tooltipHover = true;
+
+				// Show the tooltip
+				this.show();
+			}
+		};
+		document.addEventListener("mouseenter", this.eventListeners.documentMouseenter, true);
+
+		// On mouseleave, hide, remove and destroy tooltip title
+		this.eventListeners.documentMouseleave = (e: MouseEvent) => {
+			if(e.target == this.tooltipRef || (!this.tooltip.tooltipHideOnHover && e.target == this.tooltip))
+			{
+				tooltipHover = false;
+
+				// Hide the tooltip
+				this.hide(() =>
+				{
+					// Remove the tooltip
+					this.tooltip?.remove();
+				});
+			}
+		};
+		document.addEventListener("mouseleave", this.eventListeners.documentMouseleave, true);
+
+		// Event focus on the tooltipRef
+		this.eventListeners.tooltipRefFocus = () => {
+			// Show the tooltip
+			this.show();
+		};
+		this.tooltipRef.addEventListener("focus", this.eventListeners.tooltipRefFocus);
+
+		// Event focusout on the tooltipRef
+		this.eventListeners.tooltipRefFocusout = (e: FocusEvent) => {
+			if(!tooltipHover)
+			{
+				// Hide the tooltip
+				this.hide(() =>
+				{
+					// Remove the tooltip
+					this.tooltip?.remove();
+				});
+			}
+		};
+		this.tooltipRef.addEventListener("focusout", this.eventListeners.tooltipRefFocusout);
+
+		// Event keydown on the tooltipRef
+		this.eventListeners.tooltipRefKeydown = (e: KeyboardEvent) => {
+			if(e.key == "Escape")
+			{
+				e.preventDefault();
+
+				// Hide the tooltip
+				this.hide(() =>
+				{
+					// Remove the tooltip
+					this.tooltip?.remove();
+				});
+			}
+		};
+		this.tooltipRef.addEventListener("keydown", this.eventListeners.tooltipRefKeydown);
 	}
 
 	/**
@@ -656,56 +823,8 @@ export class WebcimesTooltip
 				this.tooltip.appendChild(tooltipContent);
 			}
 
-			// Event click on the tooltipRef
-			this.eventListeners.tooltipRefClick = () => {
-				// Show the tooltip
-				this.show();
-			};
-			this.tooltipRef.addEventListener("click", this.eventListeners.tooltipRefClick);
-
-			// Event keydown on the tooltipRef
-			this.eventListeners.tooltipRefKeydown = (e: KeyboardEvent) => {
-				if(e.key == "Enter" || e.key == " ")
-				{
-					e.preventDefault();
-
-					// Show the tooltip
-					this.show();
-				}
-			};
-			this.tooltipRef.addEventListener("keydown", this.eventListeners.tooltipRefKeydown);
-
-			// Event click and keydown outside the tooltipRef and tooltip
-			this.eventListeners.documentClick = (e: Event) => {
-				if(
-					(e.target as HTMLElement).closest(".webcimes-tooltip-ref") != this.tooltipRef &&
-					(e.target as HTMLElement).closest(".webcimes-tooltip") != this.tooltip
-				)
-				{
-					// Hide the tooltip
-					this.hide(() =>
-					{
-						// Remove the tooltip
-						this.tooltip?.remove();
-					}, true);
-				}
-			};
-			this.eventListeners.documentKeydown = (e: KeyboardEvent) => {
-				if(
-					(e.target as HTMLElement).closest(".webcimes-tooltip-ref") != this.tooltipRef &&
-					(e.target as HTMLElement).closest(".webcimes-tooltip") != this.tooltip
-				)
-				{
-					// Hide the tooltip
-					this.hide(() =>
-					{
-						// Remove the tooltip
-						this.tooltip?.remove();
-					}, true);
-				}
-			};
-			document.addEventListener('click', this.eventListeners.documentClick);
-			document.addEventListener('keydown', this.eventListeners.documentKeydown);
+			// Attach events for button type tooltip
+			this.attachButtonEvents();
 		}
 	}
 
@@ -761,73 +880,8 @@ export class WebcimesTooltip
 				this.tooltip.appendChild(tooltipContent);
 			}
 
-			// Current status on hover
-			let tooltipHover = false;
-
-			// On mouseenter / click, create tooltip title
-			this.eventListeners.documentMouseenter = (e: MouseEvent) => {
-				if(e.target == this.tooltipRef || (!this.tooltip.tooltipHideOnHover && e.target == this.tooltip))
-				{
-					tooltipHover = true;
-
-					// Show the tooltip
-					this.show();
-				}
-			};
-			document.addEventListener("mouseenter", this.eventListeners.documentMouseenter, true);
-
-			// On mouseleave, hide, remove and destroy tooltip title
-			this.eventListeners.documentMouseleave = (e: MouseEvent) => {
-				if(e.target == this.tooltipRef || (!this.tooltip.tooltipHideOnHover && e.target == this.tooltip))
-				{
-					tooltipHover = false;
-
-					// Hide the tooltip
-					this.hide(() =>
-					{
-						// Remove the tooltip
-						this.tooltip?.remove();
-					});
-				}
-			};
-			document.addEventListener("mouseleave", this.eventListeners.documentMouseleave, true);
-
-			// Event focus on the tooltipRef
-			this.eventListeners.tooltipRefFocus = () => {
-				// Show the tooltip
-				this.show();
-			};
-			this.tooltipRef.addEventListener("focus", this.eventListeners.tooltipRefFocus);
-
-			// Event focusout on the tooltipRef
-			this.eventListeners.tooltipRefFocusout = (e: FocusEvent) => {
-				if(!tooltipHover)
-				{
-					// Hide the tooltip
-					this.hide(() =>
-					{
-						// Remove the tooltip
-						this.tooltip?.remove();
-					});
-				}
-			};
-			this.tooltipRef.addEventListener("focusout", this.eventListeners.tooltipRefFocusout);
-
-			// Event keydown on the tooltipRef
-			this.eventListeners.tooltipRefKeydown = (e: KeyboardEvent) => {
-				if(e.key == "Escape")
-				{
-					e.preventDefault();
-
-					// Hide the tooltip
-					this.hide(() =>
-					{
-						// Remove the tooltip
-						this.tooltip?.remove();
-					});
-				}
-			};
-			this.tooltipRef.addEventListener("keydown", this.eventListeners.tooltipRefKeydown);
+			// Attach events for title type tooltip
+			this.attachTitleEvents();
 		}
 	}
 }

@@ -138,6 +138,22 @@ export declare class WebcimesTooltip {
      */
     destroy(): void;
     /**
+     * Detach only event listeners, keep DOM structure intact
+     */
+    detachEvents(): void;
+    /**
+     * Reattach event listeners based on tooltip type
+     */
+    reattachEvents(): void;
+    /**
+     * Attach events for button type tooltip
+     */
+    private attachButtonEvents;
+    /**
+     * Attach events for title type tooltip
+     */
+    private attachTitleEvents;
+    /**
      * Create automatically tooltip for button
      */
     private tooltipForButton;
