@@ -15,6 +15,8 @@ declare global {
         afterShow: CustomEvent;
         beforeHide: CustomEvent;
         afterHide: CustomEvent;
+        beforeDestroy: CustomEvent;
+        afterDestroy: CustomEvent;
     }
 }
 /**
@@ -53,6 +55,10 @@ export interface Options {
     beforeHide(): void;
     /** callback after destroy tooltip */
     afterHide(): void;
+    /** callback before destroy tooltip */
+    beforeDestroy(): void;
+    /** callback after destroy tooltip */
+    afterDestroy(): void;
 }
 /**
  * ThisTooltip
@@ -89,6 +95,8 @@ export declare class WebcimesTooltip {
     tooltipArrow: HTMLElement | null;
     /** Options of the current tooltip */
     private options;
+    /** Event listeners references for cleanup */
+    private eventListeners;
     /**
      * Create tooltip
      */
@@ -126,6 +134,10 @@ export declare class WebcimesTooltip {
      */
     hide(callback?: () => void, isOutsideEvent?: boolean): void;
     /**
+     * Destroy the tooltip and remove all event listeners
+     */
+    destroy(): void;
+    /**
      * Create automatically tooltip for button
      */
     private tooltipForButton;
@@ -133,9 +145,5 @@ export declare class WebcimesTooltip {
      * Create automatically tooltip for title
      */
     private tooltipForTitle;
-    /** Event tooltip keydown */
-    private onKeyDown;
-    /** Event tooltip opacity transition end on show class */
-    private onTransitionEndOnShow;
 }
 //# sourceMappingURL=webcimes-tooltip.d.ts.map
