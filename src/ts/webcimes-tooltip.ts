@@ -551,11 +551,23 @@ export class WebcimesTooltip
 			this.options.beforeDestroy();
 		}
 
-		// Hide the tooltip first (this also cleans up temporary listeners)
-		this.hide(() => {
+		// If the tooltip exists, clean it up directly (logic from hide method)
+		if(this.tooltip)
+		{
+			// Clear all timeouts
+			clearTimeout(this.tooltip.tooltipShowTimeout);
+			clearTimeout(this.tooltip.tooltipHideTimeout);
+
+			// Destroy floatingUi if exist
+			if(typeof this.tooltip.cleanUpFloatingUi !== "undefined")
+			{
+				this.tooltip.cleanUpFloatingUi();
+				delete this.tooltip.cleanUpFloatingUi;
+			}
+
 			// Remove the tooltip from DOM
-			this.tooltip?.remove();
-		});
+			this.tooltip.remove();
+		}
 
 		// Detach all event listeners
 		this.detachEvents();
