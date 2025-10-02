@@ -165,11 +165,11 @@ export class WebcimesTooltip
 
 		// Event transitionend on the tooltip (used for afterShow callback)
 		this.eventListeners.tooltipTransitionEnd = (e: TransitionEvent) => {
-			if(this.tooltip.classList.contains("webcimes-tooltip--show") && e.propertyName == "opacity")
+			if(this.tooltip?.classList.contains("webcimes-tooltip--show") && e.propertyName == "opacity")
 			{
 				// Callback after show tooltip
-				this.tooltipRef!.dispatchEvent(new CustomEvent("afterShow"));
-				this.tooltip.dispatchEvent(new CustomEvent("afterShow"));
+				this.tooltipRef?.dispatchEvent(new CustomEvent("afterShow"));
+				this.tooltip?.dispatchEvent(new CustomEvent("afterShow"));
 				if(typeof this.options.afterShow === 'function')
 				{
 					this.options.afterShow();
@@ -311,14 +311,16 @@ export class WebcimesTooltip
 		}
 
 		// Observe the tooltipRef for removal
-		this.onElementRemoved(this.tooltipRef!, (removedElement) => {
-			// Hide the tooltip
-			this.hide(() =>
-			{
-				// Remove the tooltip
-				this.tooltip?.remove();
-			});
-		}, true);
+		if(this.tooltipRef) {
+			this.onElementRemoved(this.tooltipRef, (removedElement) => {
+				// Hide the tooltip
+				this.hide(() =>
+				{
+					// Remove the tooltip
+					this.tooltip?.remove();
+				});
+			}, true);
+		}
 	};
 
 	/**
@@ -329,7 +331,7 @@ export class WebcimesTooltip
 		if(this.tooltipRef && this.tooltip)
 		{
 			// If the tooltip doesn't already exist then add a new one on the dom
-			if(!document.querySelector(`#${this.tooltipRef!.getAttribute("data-tooltip-target")}`))
+			if(!document.querySelector(`#${this.tooltipRef.getAttribute("data-tooltip-target")}`))
 			{
 				this.tooltip = document.body.appendChild(this.tooltip!);
 			}
@@ -359,7 +361,7 @@ export class WebcimesTooltip
 				if(!this.tooltip.tooltipAlreadyShow)
 				{
 					setTimeout(() => {
-						this.tooltipRef!.dispatchEvent(new CustomEvent("beforeShow"));
+						this.tooltipRef?.dispatchEvent(new CustomEvent("beforeShow"));
 						this.tooltip.dispatchEvent(new CustomEvent("beforeShow"));
 						if(typeof this.options.beforeShow === 'function')
 						{
@@ -375,7 +377,7 @@ export class WebcimesTooltip
 				if(this.options.type == "button")
 				{
 					// Set aria-expended to true on the tooltipRef 
-					this.tooltipRef!.setAttribute("aria-expended", "true");
+					this.tooltipRef?.setAttribute("aria-expended", "true");
 
 					// Set focus on the tooltip
 					this.tooltip.focus();
@@ -427,33 +429,37 @@ export class WebcimesTooltip
 				}
 				
 				this.tooltip.cleanUpFloatingUi = autoUpdate(this.tooltipRef, this.tooltip, () => {
-					computePosition(this.tooltipRef!, this.tooltip, options).then(({x, y, middlewareData, placement}) => {
-						this.tooltip.setAttribute("data-tooltip-placement", placement);
-						Object.assign(this.tooltip.style, {
-							left: `${x}px`,
-							top: `${y}px`,
+					if(this.tooltipRef && this.tooltip) {
+						computePosition(this.tooltipRef, this.tooltip, options).then(({x, y, middlewareData, placement}) => {
+							if(this.tooltip) {
+								this.tooltip.setAttribute("data-tooltip-placement", placement);
+								Object.assign(this.tooltip.style, {
+									left: `${x}px`,
+									top: `${y}px`,
+								});
+								if(this.tooltipArrow && middlewareData.arrow)
+								{
+									const arrowLen = this.tooltipArrow.offsetWidth;
+									const side = placement.split("-")[0];
+									const staticSide = {
+										top: "bottom",
+										right: "left",
+										bottom: "top",
+										left: "right"
+									}[side]!;
+									const { x, y } = middlewareData.arrow;
+									
+									Object.assign(this.tooltipArrow.style, {
+										left: x != null ? `${x}px` : "",
+										top: y != null ? `${y}px` : "",
+										right: "",
+										bottom: "",
+										[staticSide]: `${-arrowLen / 2}px`,
+									});
+								}
+							}
 						});
-						if(this.tooltipArrow && middlewareData.arrow)
-						{
-							const arrowLen = this.tooltipArrow.offsetWidth;
-							const side = placement.split("-")[0];
-							const staticSide = {
-								top: "bottom",
-								right: "left",
-								bottom: "top",
-								left: "right"
-							}[side]!;
-							const { x, y } = middlewareData.arrow;
-							
-							Object.assign(this.tooltipArrow.style, {
-								left: x != null ? `${x}px` : "",
-								top: y != null ? `${y}px` : "",
-								right: "",
-								bottom: "",
-								[staticSide]: `${-arrowLen / 2}px`,
-							});
-						}
-					});
+					}
 				});
 			}
 		}
@@ -465,10 +471,10 @@ export class WebcimesTooltip
 	public hide(callback?: () => void, isOutsideEvent: boolean = false)
 	{
 		// If the tooltip exist then remove it
-		if(this.tooltip && document.querySelector(`#${this.tooltipRef!.getAttribute("data-tooltip-target")}`))
+		if(this.tooltip && this.tooltipRef && document.querySelector(`#${this.tooltipRef.getAttribute("data-tooltip-target")}`))
 		{
 			// Callback before hide tooltip
-			this.tooltipRef!.dispatchEvent(new CustomEvent("beforeHide"));
+			this.tooltipRef.dispatchEvent(new CustomEvent("beforeHide"));
 			this.tooltip.dispatchEvent(new CustomEvent("beforeHide"));
 			if(typeof this.options.beforeHide === 'function')
 			{
@@ -485,12 +491,12 @@ export class WebcimesTooltip
 			if(this.options.type == "button")
 			{
 				// Set aria-expended to false on the tooltipRef if type is button
-				this.tooltipRef!.setAttribute("aria-expended", "false");
+				this.tooltipRef?.setAttribute("aria-expended", "false");
 
 				// Set focus on the tooltipRef if the event (click or keydown) is not outside the tooltip or tooltipRef, for prevent focus lost
 				if (!(isOutsideEvent))
 				{
-					this.tooltipRef!.focus();
+					this.tooltipRef.focus();
 				}
 
 				// Destroy event keydown on the tooltip
@@ -521,8 +527,8 @@ export class WebcimesTooltip
 				delete this.tooltip?.tooltipHideTimeout;
 
 				// Callback after hide tooltip
-				this.tooltipRef!.dispatchEvent(new CustomEvent("afterHide"));
-				this.tooltip.dispatchEvent(new CustomEvent("afterHide"));
+				this.tooltipRef?.dispatchEvent(new CustomEvent("afterHide"));
+				this.tooltip?.dispatchEvent(new CustomEvent("afterHide"));
 				if(typeof this.options.afterHide === 'function')
 				{
 					this.options.afterHide();
@@ -737,7 +743,7 @@ export class WebcimesTooltip
 
 		// On mouseenter / click, create tooltip title
 		this.eventListeners.documentMouseenter = (e: MouseEvent) => {
-			if(e.target == this.tooltipRef || (!this.tooltip.tooltipHideOnHover && e.target == this.tooltip))
+			if(e.target == this.tooltipRef || (!this.tooltip?.tooltipHideOnHover && e.target == this.tooltip))
 			{
 				tooltipHover = true;
 
@@ -749,7 +755,7 @@ export class WebcimesTooltip
 
 		// On mouseleave, hide, remove and destroy tooltip title
 		this.eventListeners.documentMouseleave = (e: MouseEvent) => {
-			if(e.target == this.tooltipRef || (!this.tooltip.tooltipHideOnHover && e.target == this.tooltip))
+			if(e.target == this.tooltipRef || (!this.tooltip?.tooltipHideOnHover && e.target == this.tooltip))
 			{
 				tooltipHover = false;
 
@@ -812,11 +818,11 @@ export class WebcimesTooltip
 			const tooltipID = (this.options.setId ? this.options.setId : this.getUniqueID("#", "tooltip-"));
 
 			// Set attributes to the tooltipRef
-			this.tooltipRef!.setAttribute("data-tooltip-target", tooltipID);
-			this.tooltipRef!.setAttribute("role", "button");
-			this.tooltipRef!.setAttribute("aria-expended", "false");
-			this.tooltipRef!.setAttribute("aria-haspopup", "dialog");
-			this.tooltipRef!.setAttribute("tabindex", "0");
+			this.tooltipRef.setAttribute("data-tooltip-target", tooltipID);
+			this.tooltipRef.setAttribute("role", "button");
+			this.tooltipRef.setAttribute("aria-expended", "false");
+			this.tooltipRef.setAttribute("aria-haspopup", "dialog");
+			this.tooltipRef.setAttribute("tabindex", "0");
 
 			// Tooltip content (if contentElement exist, get the element, else get the next sibling)
 			const tooltipContent: HTMLElement | null = this.getHtmlElement(this.options.contentElement) ?? (this.tooltipRef.nextElementSibling as HTMLElement | null);
@@ -881,7 +887,7 @@ export class WebcimesTooltip
 			this.tooltipRef.setAttribute("aria-describedby", tooltipID);
 
 			// Create tooltip element without adding it to the dom
-			this.tooltipRef!.setAttribute("data-tooltip-target", tooltipID);
+			this.tooltipRef.setAttribute("data-tooltip-target", tooltipID);
 			let tooltip = document.createElement("template");
 			tooltip.innerHTML = 
 			`<div class="webcimes-tooltip webcimes-tooltip--title ${(this.options.setClass?this.options.setClass:``)}" id="${tooltipID}" ${(this.options.style?`style="${this.options.style}"`:``)} role="tooltip" ${this.options.ariaLabel?`aria-label="${this.options.ariaLabel}"`:``}></div>`;
