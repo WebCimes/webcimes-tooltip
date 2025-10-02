@@ -357,12 +357,15 @@ export class WebcimesTooltip
 
 			// Create tooltipShowtimeout
 			this.tooltip.tooltipShowTimeout = setTimeout(() => {
+				// Check if tooltip still exists
+				if(!this.tooltip) return;
+				
 				// Callback before show tooltip (set a timeout of zero, to wait for some dom to load)
 				if(!this.tooltip.tooltipAlreadyShow)
 				{
 					setTimeout(() => {
 						this.tooltipRef?.dispatchEvent(new CustomEvent("beforeShow"));
-						this.tooltip.dispatchEvent(new CustomEvent("beforeShow"));
+						this.tooltip?.dispatchEvent(new CustomEvent("beforeShow"));
 						if(typeof this.options.beforeShow === 'function')
 						{
 							this.options.beforeShow();
@@ -540,7 +543,7 @@ export class WebcimesTooltip
 					callback();
 				}
 
-			}, this.tooltip.tooltipDuration);
+			}, this.tooltip?.tooltipDuration || 0);
 		}
 	}
 
