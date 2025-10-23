@@ -24,7 +24,7 @@ declare global {
  */
 export interface Options {
     /** Type (button tooltip or title tooltip), default "button" */
-    type: "button" | "title";
+    type: 'button' | 'title';
     /** Element (selector string or HTMLElement) for the tooltip */
     element: string | HTMLElement | null;
     /** Content element (selector string or HTMLElement) for the content of the tooltip, default null */
@@ -84,9 +84,31 @@ export interface ThisTooltip extends HTMLElement {
     cleanUpFloatingUi?: () => void;
 }
 /**
- * Class WebcimesTooltip
+ * Public interface for WebcimesTooltip instances
+ * This represents the actual accessible members of the instance
  */
-export declare class WebcimesTooltip {
+export interface WebcimesTooltip {
+    /** Get the dom element of the tooltip ref */
+    tooltipRef: HTMLElement | null;
+    /** Get the dom element of the tooltip */
+    tooltip: ThisTooltip;
+    /** Get the dom element of the tooltip arrow */
+    tooltipArrow: HTMLElement | null;
+    /** Show the tooltip */
+    show(): void;
+    /** Hide the tooltip */
+    hide(callback?: () => void, isOutsideEvent?: boolean): void;
+    /** Destroy the tooltip and remove all event listeners */
+    destroy(): void;
+    /** Detach only event listeners, keep DOM structure intact */
+    detachEvents(): void;
+    /** Reattach event listeners based on tooltip type */
+    reattachEvents(): void;
+}
+/**
+ * WebcimesTooltip implementation class
+ */
+export declare class WebcimesTooltipImpl implements WebcimesTooltip {
     /** Get the dom element of the tooltip ref */
     tooltipRef: HTMLElement | null;
     /** Get the dom element of the tooltip */
@@ -97,6 +119,11 @@ export declare class WebcimesTooltip {
     private options;
     /** Event listeners references for cleanup */
     private eventListeners;
+    /**
+     * MutationObservers references to disconnect on destroy.
+     * Prevents memory leaks by stopping DOM observation when the tooltip instance is destroyed.
+     */
+    private mutationObservers;
     /**
      * Create tooltip
      */
@@ -162,4 +189,8 @@ export declare class WebcimesTooltip {
      */
     private tooltipForTitle;
 }
+/**
+ * Factory function to create a WebcimesTooltip instance with proper typing
+ */
+export declare function CreateWebcimesTooltip(options: Partial<Options>): WebcimesTooltip;
 //# sourceMappingURL=webcimes-tooltip.d.ts.map

@@ -1,6 +1,6 @@
 {
   "name": "webcimes-tooltip",
-  "version": "2.6.4",
+  "version": "3.0.0",
   "description": "Create and animate tooltips simply, for dropdowns tooltips from button and titles tooltips. It works with vanilla javascript + html + css and with floating-ui dependency.",
   "main": "./dist/js/webcimes-tooltip.udm.js",
   "module": "./dist/js/webcimes-tooltip.esm.js",
@@ -32,6 +32,7 @@
     "css-minimizer-webpack-plugin": "^5.0.1",
     "filemanager-webpack-plugin": "^8.0.0",
     "mini-css-extract-plugin": "^2.7.6",
+    "prettier": "^3.6.2",
     "ts-loader": "^9.4.4",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2",

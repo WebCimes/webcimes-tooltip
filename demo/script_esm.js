@@ -1,11 +1,11 @@
 // Import webcimes-tooltip
-import { WebcimesTooltip } from "../dist/js/webcimes-tooltip.esm.js";
+import { CreateWebcimesTooltip } from "../dist/js/webcimes-tooltip.esm.js";
 
 // Wait for dom content loaded
 document.addEventListener("DOMContentLoaded", function()
 {
     // Set tooltip button
-    const tooltipButton = new WebcimesTooltip({
+    const tooltipButton = CreateWebcimesTooltip({
         type: "button", // Type (button tooltip or title tooltip), default "button"
         element: document.querySelector("button"), // Element (selector string or HTMLElement) for the tooltip
         content: null, // Content element (selector string or HTMLElement) for the content of the tooltip, default null
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function()
 
     // Set tooltip title
     document.querySelectorAll("[title]").forEach((el) => {
-        const tooltipTitle = new WebcimesTooltip({
+        const tooltipTitle = CreateWebcimesTooltip({
             type: "title", // Type (button tooltip or title tooltip), default "button"
             element: el, // Element (selector string or HTMLElement) for the tooltip
             content: null, // Content element (selector string or HTMLElement) for the content of the tooltip, default null

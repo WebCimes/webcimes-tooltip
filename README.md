@@ -6,7 +6,7 @@ Floating-ui is needed for intelligy placement of tooltips.
 
 `webcimes-tooltip` also comes with full support for web accessibility and screen readers.
 
-Once the `webcimes-tooltip` javascript is defined, we can simply call the WebcimesTooltip class with the desired options.
+Once the `webcimes-tooltip` javascript is defined, we can simply call the CreateWebcimesTooltip function with the desired options.
 
 ## Installation
 
@@ -37,7 +37,7 @@ You can use an importmap to resolve the arbitrary module names to complete paths
 
 Then import javascript module:
 ```javascript
-import { WebcimesTooltip } from "webcimes-tooltip";
+import { CreateWebcimesTooltip } from "webcimes-tooltip";
 ```
 
 Or you can also set the full path directly in the import:
@@ -47,7 +47,7 @@ Or you can also set the full path directly in the import:
 		...
 		<script type="module">
 			// Import webcimes-tooltip
-			import { WebcimesTooltip } from "./node_modules/webcimes-tooltip/dist/js/webcimes-tooltip.esm.js";
+			import { CreateWebcimesTooltip } from "./node_modules/webcimes-tooltip/dist/js/webcimes-tooltip.esm.js";
 			...
 		</script>
 	</head>
@@ -56,7 +56,7 @@ Or you can also set the full path directly in the import:
 
 Or with JS bundlers (like Webpack) you can call directly the module :
 ```javascript
-import { WebcimesTooltip } from "webcimes-tooltip";
+import { CreateWebcimesTooltip } from "webcimes-tooltip";
 ```
 
 ### UDM
@@ -77,14 +77,14 @@ You can directly load the udm module in the script tag:
 
 ## Usage
 
-### Call `WebcimesTooltip` for create tooltip:
+### Call `CreateWebcimesTooltip` for create tooltip:
 ```javascript
-// Wait for dom content loaded or call WebcimesTooltip before the end of body
+// Wait for dom content loaded or call CreateWebcimesTooltip before the end of body
 document.addEventListener("DOMContentLoaded", function()
 {
 
     // Set tooltip button
-    const tooltipButton = new WebcimesTooltip({
+    const tooltipButton = CreateWebcimesTooltip({
         type: "button", // Type (button tooltip or title tooltip), default "button"
         element: document.querySelector("button"), // Element (selector string or HTMLElement) for the tooltip
         content: null, // Content element (selector string or HTMLElement) for the content of the tooltip, default null
@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function()
 
     // Set tooltip title
     document.querySelectorAll("[title]").forEach((el) => {
-        const tooltipTitle = new WebcimesTooltip({
+        const tooltipTitle = CreateWebcimesTooltip({
             type: "title", // Type (button tooltip or title tooltip), default "button"
             element: el, // Element (selector string or HTMLElement) for the tooltip
             content: null, // Content element (selector string or HTMLElement) for the content of the tooltip, default null
@@ -165,7 +165,7 @@ You can set aria label for your button or title reference directly with the `ari
 
 If you want to set the aria-label for the tooltip, you can use the `ariaLabel` attribute like this:
 ```javascript
-const tooltip = new WebcimesTooltip({
+const tooltip = CreateWebcimesTooltip({
     ariaLabel: "Label for the tooltip", // set aria-label for the tooltip, default null
 });
 ```
@@ -181,7 +181,7 @@ You can get the dom element of the current tooltip like this:
 
 ```javascript
 // Get the instance
-const myTooltip = new WebcimesTooltip(...);
+const myTooltip = CreateWebcimesTooltip(...);
 
 // Things
 
@@ -193,7 +193,7 @@ Or you can get the reference element of the tooltip (used on `element` option):
 
 ```javascript
 // Get the instance
-const myTooltip = new WebcimesTooltip(...);
+const myTooltip = CreateWebcimesTooltip(...);
 
 // Things
 
@@ -205,7 +205,7 @@ Or you can get the arrow element of the tooltip:
 
 ```javascript
 // Get the instance
-const myTooltip = new WebcimesTooltip(...);
+const myTooltip = CreateWebcimesTooltip(...);
 
 // Things
 
@@ -219,7 +219,7 @@ But with the option `type` set to `title` only `myTooltip.tooltipRef` will work 
 Multiple events exist, which allow to interact with the tooltip at each step. You can use all events below: 
 
 ```javascript
-const tooltip = new WebcimesTooltip({
+const tooltip = CreateWebcimesTooltip({
 	beforeShow: () => {console.log("before show");}, // callback before show tooltip
 	afterShow: () => {console.log("after show");}, // callback after show tooltip
 	beforeHide: () => {console.log("before hide");}, // callback before hide tooltip
@@ -231,7 +231,7 @@ You can also use `addEventListener` for get the events from the instance like th
 
 ```javascript
 // Get the instance
-const myTooltip = new WebcimesTooltip(...);
+const myTooltip = CreateWebcimesTooltip(...);
 
 // Create an event on the current tooltip
 myTooltip.tooltipRef.addEventListener("afterHide", () => {
@@ -288,7 +288,7 @@ You can style tooltips with `--tooltip-color`, `--tooltip-background`, `--toolti
 You can define the style of the select with `css`, but you can also use the `style` property which allows to directly add an additional style to the tooltip.
 
 ```javascript
-const myTooltip = new WebcimesTooltip({
+const myTooltip = CreateWebcimesTooltip({
 	style: "background:red; color:cyan;",
 });
 ```
