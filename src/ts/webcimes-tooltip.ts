@@ -980,6 +980,6 @@ export class WebcimesTooltipImpl implements WebcimesTooltip {
 /**
  * Factory function to create a WebcimesTooltip instance with proper typing
  */
-export function CreateWebcimesTooltip(options: Partial<Options>): WebcimesTooltip {
+export function createWebcimesTooltip(options: Partial<Options>): WebcimesTooltip {
     return new WebcimesTooltipImpl(options);
 }

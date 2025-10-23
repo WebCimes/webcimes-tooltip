@@ -192,5 +192,5 @@ export declare class WebcimesTooltipImpl implements WebcimesTooltip {
 /**
  * Factory function to create a WebcimesTooltip instance with proper typing
  */
-export declare function CreateWebcimesTooltip(options: Partial<Options>): WebcimesTooltip;
+export declare function createWebcimesTooltip(options: Partial<Options>): WebcimesTooltip;
 //# sourceMappingURL=webcimes-tooltip.d.ts.map

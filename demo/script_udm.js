@@ -1,7 +1,7 @@
 // Wait for dom content loaded
 document.addEventListener('DOMContentLoaded', function () {
     // Set tooltip button
-    const tooltipButton = CreateWebcimesTooltip({
+    const tooltipButton = createWebcimesTooltip({
         type: 'button', // Type (button tooltip or title tooltip), default "button"
         element: document.querySelector('button'), // Element (selector string or HTMLElement) for the tooltip
         content: null, // Content element (selector string or HTMLElement) for the content of the tooltip, default null
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Set tooltip title
     document.querySelectorAll('[title]').forEach((el) => {
-        const tooltipTitle = CreateWebcimesTooltip({
+        const tooltipTitle = createWebcimesTooltip({
             type: 'title', // Type (button tooltip or title tooltip), default "button"
             element: el, // Element (selector string or HTMLElement) for the tooltip
             content: null, // Content element (selector string or HTMLElement) for the content of the tooltip, default null
