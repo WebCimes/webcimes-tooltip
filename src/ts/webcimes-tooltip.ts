@@ -892,8 +892,9 @@ export class WebcimesTooltipImpl implements WebcimesTooltip {
                 this.getHtmlElement(this.options.contentElement) ??
                 (this.tooltipRef.nextElementSibling as HTMLElement | null);
 
-            // Remove the display none of the tooltip content
+            // Remove the display none of the tooltip content (inline style or CSS class)
             tooltipContent?.style.removeProperty('display');
+            tooltipContent?.classList.remove('webcimes-tooltip-hidden', 'hidden');
 
             // Create tooltip element without adding it to the dom
             let tooltip = document.createElement('template');
@@ -934,8 +935,9 @@ export class WebcimesTooltipImpl implements WebcimesTooltip {
                 // Get the content element
                 tooltipContent = this.getHtmlElement(this.options.contentElement);
 
-                // Remove the display none of the content element
+                // Remove the display none of the content element (inline style or CSS class)
                 tooltipContent?.style.removeProperty('display');
+                tooltipContent?.classList.remove('webcimes-tooltip-hidden', 'hidden');
             }
             // If contentElement doesn't exist get the title attribute of the tooltipRef
             else {

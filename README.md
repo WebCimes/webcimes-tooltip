@@ -175,7 +175,24 @@ If set to `button` it will be used as dropdown tooltip, also immediately after t
 <div style="display:none;">My tooltip content</div>
 ```
 
-Note that the `div` tag immediately following the button will be automatically hidden by `webcimes-tooltip`. However, to avoid the element briefly appearing before being hidden by the script, it's better to initially set `display: none` in your style attribute on the element. Once the script is loaded, the `display` style will be automatically removed.
+Note that the `div` tag immediately following the button will be automatically hidden by `webcimes-tooltip`. However, to avoid the element briefly appearing before being hidden by the script, it's better to initially hide the element. Once the script is loaded, the hidden state will be automatically removed.
+
+You have three ways to initially hide the content element:
+
+- **Inline style** (simple but blocked by some CSP policies):
+```html
+<div style="display:none;">My tooltip content</div>
+```
+
+- **Lib class** (CSP-friendly, requires the `webcimes-tooltip.css` stylesheet):
+```html
+<div class="webcimes-tooltip-hidden">My tooltip content</div>
+```
+
+- **Tailwind class** (if you use Tailwind CSS):
+```html
+<div class="hidden">My tooltip content</div>
+```
 
 If you prefer, you can also set the `content` option with a specific class or ID to target the content, eliminating the need to create an element immediately after the button.
 
@@ -198,7 +215,7 @@ If set to `title`, the module will automatically replace the `title` attribute w
 </button>
 ```
 
-If you prefer, you can also set the `content` option with a specific class or ID to target the content, eliminating the need to create a title attribut. However, to avoid the element briefly appearing before being hidden by the script, it's better to initially set `display: none` in your style attribute on the element. Once the script is loaded, the `display` style will be automatically removed.
+If you prefer, you can also set the `content` option with a specific class or ID to target the content, eliminating the need to create a title attribute. However, to avoid the element briefly appearing before being hidden by the script, it's better to initially hide the element (via `style="display:none"`, the `webcimes-tooltip-hidden` class, or Tailwind's `hidden` class). Once the script is loaded, the hidden state will be automatically removed.
 
 For accessibility reasons, you can also automatically open the tooltip by focusing a natively focusable element like `<button>` or `<input>`.
 

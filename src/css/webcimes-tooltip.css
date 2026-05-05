@@ -10,6 +10,12 @@
 -----------------------
 */
 
+/* Helper class to hide tooltip content before script loads (CSP-friendly alternative to style="display:none") */
+.webcimes-tooltip-hidden
+{
+	display: none !important;
+}
+
 .webcimes-tooltip,
 .webcimes-tooltip *,
 .webcimes-tooltip *::before,
