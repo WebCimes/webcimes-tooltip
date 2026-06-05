@@ -104,6 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setId: null, // set a specific id on the tooltip. default "null"
         setClass: null, // set a specific class on the tooltip, default "null"
         placement: 'bottom', // Choose tooltip placement, default "bottom" for type "button" and "top" for type "title"
+        fallbackPlacements: undefined, // Override Floating UI fallback placements, default preserves "start" / "end" alignment
         delay: 0, // Delay before show the tooltip, default 0
         duration: 600, // Duration of animation for show the tooltip, default 600
         arrow: true, // Generate an arrow for the tooltip, default true
@@ -132,6 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
             setId: null, // set a specific id on the tooltip. default "null"
             setClass: null, // set a specific class on the tooltip, default "null"
             placement: 'top', // Choose tooltip placement, default "bottom" for type "button" and "top" for type "title"
+            fallbackPlacements: undefined, // Override Floating UI fallback placements, default preserves "start" / "end" alignment
             delay: 400, // Delay before show the tooltip, default 0
             duration: 600, // Duration of animation for show the tooltip, default 600
             arrow: true, // Generate an arrow for the tooltip, default true
@@ -243,7 +245,20 @@ const tooltip = createWebcimesTooltip({
 
 ### Other options:
 
-The `placement`, `delay`, `duration`, `arrow` and `hideOnHover` attributes define the default attributes that will apply to all tooltips.
+The `placement`, `fallbackPlacements`, `delay`, `duration`, `arrow` and `hideOnHover` attributes define the default attributes that will apply to all tooltips.
+
+By default, Floating UI fallback placements preserve `start` / `end` alignment when the initial placement uses one. For example, `bottom-start` flips first to `top-start`, `bottom-end` flips first to `top-end`, and `top-start` flips first to `bottom-start`. Placements without alignment keep the previous fallback behavior: `['top', 'bottom', 'left', 'right']`.
+
+You can override the fallback list explicitly:
+
+```javascript
+const tooltip = createWebcimesTooltip({
+    placement: 'bottom-start',
+    fallbackPlacements: ['top-start', 'right-start', 'left-start'],
+});
+```
+
+After Floating UI has computed the final position, the tooltip keeps the real placement in the `data-tooltip-placement` attribute, for example `top-start` after a flip.
 
 ### HTML data attribute options:
 

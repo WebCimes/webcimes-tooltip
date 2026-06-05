@@ -47,6 +47,8 @@ export interface Options {
     setClass: string | null;
     /** Choose tooltip placement, default "bottom" for type "button" and "top" for type "title" */
     placement: Placement;
+    /** Override Floating UI fallback placements, default preserves alignment when present */
+    fallbackPlacements?: Placement[];
     /** Delay before show the tooltip, default 0 for type "button" and 400 for type "title" */
     delay: number;
     /** Duration of animation for show the tooltip, default 600 */
@@ -78,9 +80,9 @@ export interface Options {
  */
 export interface ThisTooltip extends HTMLElement {
     /** tooltip show timeout */
-    tooltipShowTimeout?: NodeJS.Timeout;
+    tooltipShowTimeout?: ReturnType<typeof setTimeout>;
     /** tooltip hide timeout */
-    tooltipHideTimeout?: NodeJS.Timeout;
+    tooltipHideTimeout?: ReturnType<typeof setTimeout>;
     /** tooltip delay */
     tooltipDelay?: number;
     /** tooltip duration */
@@ -107,7 +109,7 @@ export interface WebcimesTooltip {
     tooltipRef: HTMLElement | null;
 
     /** Get the dom element of the tooltip */
-    tooltip: ThisTooltip;
+    tooltip: ThisTooltip | null;
 
     /** Get the dom element of the tooltip arrow */
     tooltipArrow: HTMLElement | null;
@@ -133,13 +135,13 @@ export interface WebcimesTooltip {
  */
 export class WebcimesTooltipImpl implements WebcimesTooltip {
     /** Get the dom element of the tooltip ref */
-    public tooltipRef: HTMLElement | null;
+    public tooltipRef: HTMLElement | null = null;
 
     /** Get the dom element of the tooltip */
-    public tooltip: ThisTooltip;
+    public tooltip: ThisTooltip | null = null;
 
     /** Get the dom element of the tooltip arrow */
-    public tooltipArrow: HTMLElement | null;
+    public tooltipArrow: HTMLElement | null = null;
 
     /** Options of the current tooltip */
     private options: Options;
@@ -254,6 +256,36 @@ export class WebcimesTooltipImpl implements WebcimesTooltip {
             htmlElement = document.querySelector(element) as HTMLElement | null;
         }
         return htmlElement;
+    }
+
+    /**
+     * Get default Floating UI fallback placements.
+     */
+    private getDefaultFallbackPlacements(placement: Placement): Placement[] {
+        const fallbackSides = ['top', 'bottom', 'left', 'right'];
+        const [side, alignment] = placement.split('-');
+
+        if (!alignment) {
+            return fallbackSides as Placement[];
+        }
+
+        const oppositeSides: Record<string, string> = {
+            top: 'bottom',
+            bottom: 'top',
+            left: 'right',
+            right: 'left',
+        };
+        const oppositeSide = oppositeSides[side];
+        const orderedSides = oppositeSide
+            ? [
+                  oppositeSide,
+                  ...fallbackSides.filter((fallbackSide) => fallbackSide != oppositeSide),
+              ]
+            : fallbackSides;
+
+        return orderedSides
+            .filter((fallbackSide) => fallbackSide != side)
+            .map((fallbackSide) => `${fallbackSide}-${alignment}` as Placement);
     }
 
     /**
@@ -481,7 +513,9 @@ export class WebcimesTooltipImpl implements WebcimesTooltip {
                         }),
                         flip({
                             // Automatically flip the tooltip on scroll or resize
-                            fallbackPlacements: ['top', 'bottom', 'left', 'right'],
+                            fallbackPlacements:
+                                this.options.fallbackPlacements ??
+                                this.getDefaultFallbackPlacements(this.tooltip.tooltipPlacement),
                             padding: 10, // padding between tooltip and edge of the boundary before flip
                         }),
                     ],
@@ -651,7 +685,7 @@ export class WebcimesTooltipImpl implements WebcimesTooltip {
 
         // Clear all instance references
         this.tooltipRef = null;
-        this.tooltip = null as any;
+        this.tooltip = null;
         this.tooltipArrow = null;
 
         // Callback after destroy tooltip

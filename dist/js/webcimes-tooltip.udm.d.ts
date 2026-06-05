@@ -3,7 +3,6 @@
  * MIT License - https://choosealicense.com/licenses/mit/
  * Date: 2023-03-25
  */
-/// <reference types="node" />
 import { Placement } from '@floating-ui/dom';
 /**
  * Global
@@ -35,6 +34,8 @@ export interface Options {
     setClass: string | null;
     /** Choose tooltip placement, default "bottom" for type "button" and "top" for type "title" */
     placement: Placement;
+    /** Override Floating UI fallback placements, default preserves alignment when present */
+    fallbackPlacements?: Placement[];
     /** Delay before show the tooltip, default 0 for type "button" and 400 for type "title" */
     delay: number;
     /** Duration of animation for show the tooltip, default 600 */
@@ -65,9 +66,9 @@ export interface Options {
  */
 export interface ThisTooltip extends HTMLElement {
     /** tooltip show timeout */
-    tooltipShowTimeout?: NodeJS.Timeout;
+    tooltipShowTimeout?: ReturnType<typeof setTimeout>;
     /** tooltip hide timeout */
-    tooltipHideTimeout?: NodeJS.Timeout;
+    tooltipHideTimeout?: ReturnType<typeof setTimeout>;
     /** tooltip delay */
     tooltipDelay?: number;
     /** tooltip duration */
@@ -91,7 +92,7 @@ export interface WebcimesTooltip {
     /** Get the dom element of the tooltip ref */
     tooltipRef: HTMLElement | null;
     /** Get the dom element of the tooltip */
-    tooltip: ThisTooltip;
+    tooltip: ThisTooltip | null;
     /** Get the dom element of the tooltip arrow */
     tooltipArrow: HTMLElement | null;
     /** Show the tooltip */
@@ -112,7 +113,7 @@ export declare class WebcimesTooltipImpl implements WebcimesTooltip {
     /** Get the dom element of the tooltip ref */
     tooltipRef: HTMLElement | null;
     /** Get the dom element of the tooltip */
-    tooltip: ThisTooltip;
+    tooltip: ThisTooltip | null;
     /** Get the dom element of the tooltip arrow */
     tooltipArrow: HTMLElement | null;
     /** Options of the current tooltip */
@@ -136,6 +137,10 @@ export declare class WebcimesTooltipImpl implements WebcimesTooltip {
      * Convert element entry to an HTMLElement
      */
     private getHtmlElement;
+    /**
+     * Get default Floating UI fallback placements.
+     */
+    private getDefaultFallbackPlacements;
     /**
      * Get a unique ID, related to the identifier
      * @param selectorPrefix Prefix of the selector

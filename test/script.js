@@ -44,4 +44,12 @@ document.addEventListener('DOMContentLoaded', function () {
         element: document.querySelector('#myButtonWithContentEl'),
         contentElement: document.querySelector('#myContent2'),
     });
+
+    // Flip should preserve alignment: bottom-start -> top-start
+    const tooltipButtonBottomStart = createWebcimesTooltip({
+        type: 'button',
+        element: document.querySelector('#myButtonBottomStart'),
+        contentElement: document.querySelector('#myContentBottomStart'),
+        placement: 'bottom-start',
+    });
 });
