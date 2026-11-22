@@ -1,5 +1,9 @@
 # webcimes-tooltip
 
+<img src="./demo/webcimes-tooltip-logo.png" width="96" height="96" alt="webcimes-tooltip logo" />
+
+[Live demo](https://webcimes.github.io/webcimes-tooltip/)
+
 Create and animate tooltips simply, for dropdowns tooltips and titles tooltips. It works with vanilla javascript + html + css and with floating-ui dependency.
 
 Floating-ui is needed for intelligy placement of tooltips.
@@ -28,7 +32,6 @@ You can use an importmap to resolve the arbitrary module names to complete paths
         <script type="importmap">
             {
                 "imports": {
-                    "@floating-ui/dom": "./node_modules/@floating-ui/core/dist/floating-ui.core.esm.js",
                     "webcimes-tooltip": "./node_modules/webcimes-tooltip/dist/js/webcimes-tooltip.esm.js"
                 }
             }
@@ -397,3 +400,9 @@ const myTooltip = createWebcimesTooltip({
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
+
+## Local development
+
+Use Node.js 20.19+ on the 20.x line, or Node.js 22.12 or later. Run `npm install` and `make dev`, then open the URL printed by Vite.
+
+Run `make watch` to rebuild on source changes, `make build` to regenerate the distributed bundles and declarations, or `make pack` to preview the npm package. Run `make build` before testing the UMD demo locally.

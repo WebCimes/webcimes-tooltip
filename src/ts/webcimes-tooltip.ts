@@ -467,8 +467,8 @@ export class WebcimesTooltipImpl implements WebcimesTooltip {
 
                     // If type is button
                     if (this.options.type == 'button') {
-                        // Set aria-expended to true on the tooltipRef
-                        this.tooltipRef?.setAttribute('aria-expended', 'true');
+                        // Set aria-expanded to true on the tooltipRef
+                        this.tooltipRef?.setAttribute('aria-expanded', 'true');
 
                         // Set focus on the tooltip
                         this.tooltip.focus();
@@ -592,8 +592,8 @@ export class WebcimesTooltipImpl implements WebcimesTooltip {
 
             // If type is a button
             if (this.options.type == 'button') {
-                // Set aria-expended to false on the tooltipRef if type is button
-                this.tooltipRef?.setAttribute('aria-expended', 'false');
+                // Set aria-expanded to false on the tooltipRef if type is button
+                this.tooltipRef?.setAttribute('aria-expanded', 'false');
 
                 // Set focus on the tooltipRef if the event (click or keydown) is not outside the tooltip or tooltipRef, for prevent focus lost
                 if (!isOutsideEvent) {
@@ -678,7 +678,7 @@ export class WebcimesTooltipImpl implements WebcimesTooltip {
             this.tooltipRef.classList.remove('webcimes-tooltip-ref');
             this.tooltipRef.removeAttribute('data-tooltip-target');
             this.tooltipRef.removeAttribute('role');
-            this.tooltipRef.removeAttribute('aria-expended');
+            this.tooltipRef.removeAttribute('aria-expanded');
             this.tooltipRef.removeAttribute('aria-haspopup');
             this.tooltipRef.removeAttribute('tabindex');
         }
@@ -917,7 +917,7 @@ export class WebcimesTooltipImpl implements WebcimesTooltip {
             // Set attributes to the tooltipRef
             this.tooltipRef.setAttribute('data-tooltip-target', tooltipID);
             this.tooltipRef.setAttribute('role', 'button');
-            this.tooltipRef.setAttribute('aria-expended', 'false');
+            this.tooltipRef.setAttribute('aria-expanded', 'false');
             this.tooltipRef.setAttribute('aria-haspopup', 'dialog');
             this.tooltipRef.setAttribute('tabindex', '0');
 

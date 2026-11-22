@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+            name="description"
+            content="Try tooltips above and below a button. Floating UI handles the positioning and fallback placement."
+        />
+        <title>webcimes-tooltip · Live demo</title>
+        <link rel="icon" type="image/png" href="./demo/webcimes-tooltip-logo.png" />
+        <link rel="stylesheet" href="./dist/css/webcimes-tooltip.css" />
+        <link rel="stylesheet" href="./demo/site.css" />
+        <script type="module" src="./demo/site.js"></script>
+    </head>
+    <body>
+        <header class="site-header">
+            <span class="wordmark"
+                ><img
+                    src="./demo/webcimes-tooltip-logo.png"
+                    alt=""
+                    width="48"
+                    height="48"
+                />webcimes-tooltip</span
+            ><a href="https://github.com/WebCimes/webcimes-tooltip"
+                >View on GitHub <span aria-hidden="true">↗</span></a
+            >
+        </header>
+        <main>
+            <section class="hero">
+                <div>
+                    <h1>Tooltips that follow their trigger</h1>
+                    <p class="intro">
+                        Try tooltips above and below a button. Floating UI handles the positioning
+                        and fallback placement.
+                    </p>
+                    <div class="demo-controls tooltip-triggers">
+                        <button id="above" class="primary-button" type="button">
+                            Tooltip above
+                        </button>
+                        <div class="webcimes-tooltip-hidden">Positioned above this button.</div>
+                        <button id="below" class="primary-button" type="button">
+                            Tooltip below
+                        </button>
+                        <div class="webcimes-tooltip-hidden">Positioned below this button.</div>
+                    </div>
+                </div>
+                <figure class="code-panel">
+                    <figcaption>JavaScript</figcaption>
+                    <pre><code><span class="keyword">import</span> { createWebcimesTooltip } <span class="keyword">from</span> <span class="string">'webcimes-tooltip'</span>;
+
+<span class="function">createWebcimesTooltip</span>({
+    type: <span class="string">'button'</span>,
+    element: <span class="string">'#above'</span>,
+    placement: <span class="string">'top'</span>,
+    arrow: true,
+});</code></pre>
+                </figure>
+            </section>
+            <section class="examples" aria-labelledby="examples-title">
+                <h2 id="examples-title">More examples</h2>
+                <ul class="example-links">
+                    <li>
+                        <a href="./test/test.html"
+                            ><strong>Test page</strong><span>Try more library options.</span></a
+                        >
+                    </li>
+                    <li>
+                        <a href="./demo/demo_esm.html"
+                            ><strong>ESM demo</strong
+                            ><span>Load the library with a module import.</span></a
+                        >
+                    </li>
+                    <li>
+                        <a href="./demo/demo_udm.html"
+                            ><strong>UMD demo</strong
+                            ><span>Load the library with a classic script tag.</span></a
+                        >
+                    </li>
+                </ul>
+            </section>
+        </main>
+    </body>
+</html>
